@@ -1,0 +1,1468 @@
+/* ============================================================
+   Agenda Psi — the practice diary
+   An open leather appointment book lying on a desk: oxblood
+   binding, parchment pages, ruled ledger lines, ink accents.
+   ============================================================ */
+
+:root {
+  --desk: #3a1f2c;
+  --desk-deep: #2c1620;
+  --page: #f5ecd8;
+  --page-shade: #eadfc4;
+  --page-shade-deep: #ded1ae;
+  --rule: #c7a96b;
+  --rule-soft: rgba(199, 169, 107, 0.35);
+  --ink: #1e5c55;
+  --ink-deep: #123e39;
+  --ink-wash: #dceae6;
+  --brass: #a9752f;
+  --brass-wash: #f0e3c8;
+  --oxblood: #8c3b3f;
+  --oxblood-wash: #f1dedd;
+  --text: #2a2018;
+  --text-muted: #6b5d48;
+  --text-soft: #9c8d72;
+  --error: #a6453b;
+  --shadow-sm: 0 1px 2px rgba(42, 32, 24, 0.08);
+  --shadow-md: 0 6px 16px rgba(42, 32, 24, 0.16);
+  --shadow-lg: 0 18px 40px rgba(20, 12, 10, 0.35);
+  --radius: 4px;
+  --radius-sm: 3px;
+  --cell-h: 56px;
+  /* --- Type system -------------------------------------------------------
+     Active: DM Sans throughout, for a quieter, more clinical register.
+     To restore the literary diary voice, swap the two --font-display /
+     --font-body lines below for the commented pair.
+
+     --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+     --font-body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  */
+  --font-display: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--desk);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Layout — the desk and the open page
+   ============================================================ */
+
+.app {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 120% 70% at 50% -10%, rgba(255, 255, 255, 0.05), transparent 60%),
+    var(--desk);
+  padding: 40px 20px 56px;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  position: relative;
+  background: var(--page);
+  border-radius: 6px;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.15);
+  padding: 32px 32px 28px 44px;
+  animation: page-settle 0.5s ease both;
+}
+
+@keyframes page-settle {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Binding gutter down the left edge of the page. */
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 18px;
+  width: 0;
+  border-left: 1px solid var(--rule-soft);
+  box-shadow: 6px 0 0 -5px var(--rule-soft);
+}
+
+.footer {
+  margin-top: 28px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule-soft);
+  text-align: center;
+  color: var(--text-soft);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+}
+
+.footer p {
+  margin: 0;
+}
+
+/* ============================================================
+   Headers
+   ============================================================ */
+
+.back-link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-bottom: 14px;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.15s, transform 0.15s;
+}
+
+.back-link:hover {
+  color: var(--ink-deep);
+  transform: translateX(-2px);
+}
+
+.app-header {
+  margin-bottom: 8px;
+}
+
+.app-header-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.app-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.025em;
+}
+
+.app-subtitle {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 15px;
+  font-style: italic;
+}
+
+.lang-toggle {
+  background: transparent;
+  border: 1px solid var(--text);
+  border-radius: 999px;
+  padding: 7px 15px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  transform: rotate(-2deg);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.lang-toggle:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--page);
+}
+
+.week-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 9px 15px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s, border-color 0.15s, transform 0.05s;
+  white-space: nowrap;
+}
+
+.nav-btn:hover {
+  background: var(--ink-wash);
+  border-color: var(--ink);
+  color: var(--ink-deep);
+}
+
+.nav-btn:active {
+  transform: scale(0.98);
+}
+
+.today-btn {
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  color: var(--page);
+  border-radius: var(--radius-sm);
+  padding: 9px 18px;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  transition: background 0.15s;
+}
+
+.today-btn:hover {
+  background: var(--ink-deep);
+  border-color: var(--ink-deep);
+}
+
+/* ============================================================
+   Date picker bar (month calendar + day strip)
+   ============================================================ */
+
+.date-picker-bar {
+  margin-top: 20px;
+  background: var(--page-shade);
+  border: 1px solid var(--rule-soft);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 24px;
+}
+
+@media (max-width: 760px) {
+  .date-picker-bar {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ----- Month calendar ----- */
+
+.month-calendar {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.month-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.month-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: capitalize;
+  color: var(--text);
+}
+
+.month-nav {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.month-nav:hover {
+  background: var(--ink-wash);
+  color: var(--ink-deep);
+}
+
+.month-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.month-weekday {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 0;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.month-cell {
+  position: relative;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 6px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.month-cell:hover {
+  background: var(--ink-wash);
+  border-color: var(--ink);
+}
+
+.month-cell.out-month {
+  color: var(--text-soft);
+  opacity: 0.45;
+}
+
+.month-cell.weekend .month-cell-num {
+  color: var(--text-muted);
+}
+
+.month-cell.today {
+  border-color: var(--brass);
+  background: var(--brass-wash);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.month-cell.selected {
+  background: var(--ink);
+  color: var(--page);
+  border-color: var(--ink);
+  font-weight: 700;
+}
+
+.month-cell.selected:hover {
+  background: var(--ink-deep);
+  border-color: var(--ink-deep);
+}
+
+.month-cell-num {
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+
+/* ----- Day strip ----- */
+
+.day-strip {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.day-strip-chip {
+  background: var(--page);
+  border: 1px solid var(--rule-soft);
+  border-radius: var(--radius-sm);
+  padding: 9px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--text);
+  font-weight: 500;
+  transition: background 0.15s, border-color 0.15s, transform 0.05s;
+  position: relative;
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+.day-strip-chip:last-child {
+  margin-bottom: 0;
+}
+
+.day-strip-chip:hover {
+  background: var(--ink-wash);
+  border-color: var(--ink);
+  color: var(--ink-deep);
+}
+
+.day-strip-chip:active {
+  transform: scale(0.98);
+}
+
+.day-strip-chip.selected {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--page);
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+.day-strip-chip.today:not(.selected) {
+  border-color: var(--brass);
+  background: var(--brass-wash);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.day-strip-chip.weekend:not(.selected):not(.today) .day-strip-weekday {
+  color: var(--oxblood);
+}
+
+.day-strip-weekday {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.day-strip-chip.selected .day-strip-weekday,
+.day-strip-chip.today .day-strip-weekday {
+  color: inherit;
+}
+
+.day-strip-day {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.day-strip-dot {
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.day-strip-chip.selected .day-strip-dot {
+  background: var(--page);
+}
+
+/* ============================================================
+   Schedule grid — ruled ledger paper
+   ============================================================ */
+
+.schedule-main {
+  margin-top: 24px;
+}
+
+/* The week is five columns wide at minimum; below that it scrolls
+   rather than crushing names into one letter per line. */
+.schedule-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.schedule-grid {
+  width: 100%;
+  min-width: 620px;
+}
+
+.grid-header {
+  display: grid;
+  grid-template-columns: 64px repeat(5, 1fr);
+  gap: 4px;
+  margin-bottom: 6px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--text);
+}
+
+.grid-header .time-col.header {
+  background: var(--page);
+}
+
+.day-header {
+  color: var(--text);
+  font-weight: 600;
+  padding: 4px;
+  text-align: center;
+  position: relative;
+}
+
+.day-header-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  margin-bottom: 6px;
+}
+
+.day-header-name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+/* Weekends are fully schedulable — marked, not dimmed. */
+.day-header.weekend .day-header-name {
+  color: var(--oxblood);
+}
+
+.day-header.today .day-header-date {
+  position: relative;
+  color: var(--ink-deep);
+}
+
+.day-header.today .day-header-date::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--ink);
+}
+
+.day-header-date {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.grid-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.slot-row {
+  display: grid;
+  grid-template-columns: 64px repeat(5, 1fr);
+  gap: 4px;
+  align-items: stretch;
+  border-bottom: 1px dashed var(--rule-soft);
+}
+
+.time-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px;
+  font-variant-numeric: tabular-nums;
+  /* Stays put while the week scrolls sideways on narrow screens. */
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--page);
+}
+
+/* ----- Slot cells ----- */
+
+.slot-cell {
+  min-height: var(--cell-h);
+  border: none;
+  border-left: 1px solid var(--rule-soft);
+  background: transparent;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-align: center;
+  transition: background 0.15s, color 0.15s;
+  font: inherit;
+  color: var(--text-soft);
+}
+
+.slot-cell:hover {
+  background: var(--ink-wash);
+  color: var(--ink-deep);
+}
+
+/* A faint wash separates weekend columns without discouraging their use.
+   Excludes :hover so the hover state still reads. */
+.slot-cell.free.weekend:not(.lunch):not(.selected):not(:hover) {
+  background: rgba(140, 59, 63, 0.035);
+}
+
+.slot-cell:active {
+  transform: scale(0.99);
+}
+
+.slot-cell:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -2px;
+}
+
+.slot-cell.free .add-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  color: var(--text-soft);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+.slot-cell.free:hover .add-icon,
+.slot-cell.free:focus-visible .add-icon {
+  color: var(--ink);
+  opacity: 1;
+}
+
+/* Empty hours read as blank ruled lines; the prompt surfaces on approach. */
+.slot-cell.free .free-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-soft);
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+.slot-cell.free:hover .free-label,
+.slot-cell.free:focus-visible .free-label {
+  color: var(--ink-deep);
+  opacity: 1;
+}
+
+.slot-cell.booked {
+  background: var(--ink-wash);
+  color: var(--ink-deep);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 14px;
+  justify-content: flex-start;
+  text-align: left;
+  padding-left: 10px;
+}
+
+.slot-cell.booked::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink);
+  flex-shrink: 0;
+}
+
+/* The fork already marks the entry; drop the bullet so there is one mark. */
+.slot-cell.booked.lunch::before {
+  display: none;
+}
+
+.slot-cell.booked:hover {
+  background: #cfe3df;
+}
+
+.slot-cell.booked .patient-name {
+  overflow-wrap: break-word;
+  line-height: 1.25;
+}
+
+.slot-cell.editing {
+  background: var(--page-shade);
+  box-shadow: inset 0 0 0 2px var(--ink);
+  padding: 4px;
+}
+
+.slot-cell.selected {
+  background: var(--brass-wash);
+  box-shadow: inset 0 0 0 2px var(--brass);
+  color: var(--text);
+}
+
+.slot-cell.selected:hover {
+  background: var(--brass-wash);
+  color: var(--text);
+}
+
+/* ----- Inline editor ----- */
+
+.cell-editor {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cell-input {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--ink);
+  background: transparent;
+  padding: 6px 4px;
+  text-align: center;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.cell-input:focus {
+  outline: none;
+  border-bottom-width: 2px;
+}
+
+.cell-input::placeholder {
+  color: var(--text-soft);
+  font-weight: 400;
+  font-family: var(--font-body);
+}
+
+/* ----- Lunch hours -----
+   A lunch slot is a normal cell wearing the break's clothes: hatched brass,
+   still clickable, so a session can be booked straight over it. */
+
+.slot-cell.lunch.free {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--brass-wash),
+    var(--brass-wash) 6px,
+    #e8d5a8 6px,
+    #e8d5a8 12px
+  );
+  color: var(--brass);
+}
+
+.slot-cell.lunch.free:hover {
+  color: var(--brass);
+}
+
+.lunch-icon {
+  font-size: 14px;
+  font-style: normal;
+}
+
+.lunch-cell-text {
+  font-weight: 600;
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* The break's own "+" replaces the empty-hour one, on hover only. */
+.slot-cell.lunch.free .add-icon.lunch-add {
+  color: var(--brass);
+  border-color: var(--brass);
+}
+
+.slot-cell.lunch.free:hover .lunch-cell-text,
+.slot-cell.lunch.free:focus-visible .lunch-cell-text {
+  opacity: 0.55;
+}
+
+/* A session booked during the break keeps the ink treatment and flags why. */
+.slot-cell.booked.lunch {
+  box-shadow: inset 3px 0 0 var(--brass);
+}
+
+.lunch-flag {
+  font-size: 12px;
+  flex-shrink: 0;
+  opacity: 0.75;
+}
+
+/* ----- Lunch handle (per-day config) ----- */
+
+.lunch-handle {
+  background: transparent;
+  border: 1px dashed var(--brass);
+  border-radius: 999px;
+  padding: 3px 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--brass);
+  transition: background 0.15s, border-style 0.15s;
+}
+
+.lunch-handle:hover {
+  background: var(--brass-wash);
+  border-style: solid;
+}
+
+.lunch-handle-icon {
+  font-size: 12px;
+}
+
+.lunch-handle-text {
+  font-variant-numeric: tabular-nums;
+}
+
+.lunch-popover-wrap {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 4px;
+  z-index: 20;
+}
+
+/* ----- Lunch popover ----- */
+
+.lunch-popover {
+  background: var(--page);
+  border: 1px solid var(--text);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 14px;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lunch-popover-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.lunch-popover-scope {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brass);
+  margin-top: -6px;
+}
+
+.lunch-popover-row {
+  display: flex;
+  gap: 12px;
+}
+
+.lunch-popover-label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.lunch-popover-input {
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 6px 2px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+.lunch-popover-input:focus {
+  outline: none;
+  border-bottom: 2px solid var(--ink);
+}
+
+.lunch-popover-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-soft);
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.lunch-popover-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.lunch-popover-reset {
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.lunch-popover-reset:hover {
+  background: var(--page-shade);
+}
+
+.lunch-popover-save {
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  color: var(--page);
+  border-radius: var(--radius-sm);
+  padding: 6px 16px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.lunch-popover-save:hover {
+  background: var(--ink-deep);
+  border-color: var(--ink-deep);
+}
+
+/* ============================================================
+   Multi-fill prompt
+   ============================================================ */
+
+.multi-fill-prompt {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--brass-wash);
+  border: 1px solid var(--brass);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.multi-fill-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.multi-fill-count {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--brass);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.multi-fill-input {
+  flex: 1;
+  min-width: 160px;
+  border: none;
+  border-bottom: 2px solid var(--brass);
+  border-radius: 0;
+  padding: 8px 4px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+
+.multi-fill-input:focus {
+  outline: none;
+}
+
+.multi-fill-apply {
+  background: var(--brass);
+  border: 1px solid var(--brass);
+  color: var(--page);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: opacity 0.15s;
+}
+
+.multi-fill-apply:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.multi-fill-apply:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.multi-fill-cancel {
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.multi-fill-cancel:hover {
+  background: var(--page-shade);
+}
+
+.multi-fill-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ============================================================
+   Home — the diary's table of contents
+   ============================================================ */
+
+.home-index {
+  margin-top: 32px;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-index-item {
+  display: grid;
+  grid-template-columns: 5px 1fr auto;
+  align-items: center;
+  gap: 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule-soft);
+  padding: 22px 8px 22px 0;
+  text-align: left;
+  color: var(--text);
+  user-select: none;
+  transition: padding-left 0.2s ease, background 0.2s ease;
+}
+
+.home-index-item:first-child {
+  border-top: 1px solid var(--rule-soft);
+}
+
+.home-index-item:last-child {
+  border-bottom: none;
+}
+
+.home-index-item:hover {
+  padding-left: 10px;
+  background: var(--page-shade);
+}
+
+.home-index-tab {
+  align-self: stretch;
+  border-radius: 2px;
+  background: var(--tab-color, var(--ink));
+}
+
+.home-index-body {
+  display: block;
+  min-width: 0;
+}
+
+.home-index-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.home-index-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+
+.home-index-leader {
+  flex: 1;
+  border-bottom: 1px dotted var(--text-soft);
+  min-width: 24px;
+  margin-bottom: 6px;
+}
+
+.home-index-desc {
+  display: block;
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--text-muted);
+  font-style: italic;
+  max-width: 46ch;
+}
+
+.home-index-arrow {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  color: var(--tab-color, var(--ink));
+  transition: transform 0.2s ease;
+}
+
+.home-index-item:hover .home-index-arrow {
+  transform: translateX(4px);
+}
+
+/* ============================================================
+   Generic page layout (Patients / Evolution)
+   ============================================================ */
+
+.page-main {
+  margin-top: 24px;
+}
+
+.inline-form {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px dashed var(--rule-soft);
+}
+
+.stacked-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 12px 0 28px;
+  max-width: 680px;
+}
+
+.stacked-form .text-area {
+  align-self: stretch;
+}
+
+.text-input,
+.text-area {
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 8px 2px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+
+.text-input:focus,
+.text-area:focus,
+.select-input:focus {
+  outline: none;
+  border-bottom: 2px solid var(--ink);
+}
+
+.inline-form .text-input {
+  flex: 1;
+  min-width: 160px;
+}
+
+.text-area {
+  resize: vertical;
+  min-height: 90px;
+  border: 1px solid var(--rule);
+  padding: 10px 12px;
+  background: var(--page-shade);
+  line-height: 1.6;
+}
+
+.text-area:focus {
+  border: 1px solid var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+.select-input {
+  max-width: 320px;
+  cursor: pointer;
+}
+
+.field-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.primary-btn {
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  color: var(--page);
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: var(--ink-deep);
+  border-color: var(--ink-deep);
+}
+
+.primary-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.empty-hint {
+  color: var(--text-soft);
+  font-size: 14px;
+  font-style: italic;
+  margin: 8px 0;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: transparent;
+  border-bottom: 1px dashed var(--rule-soft);
+  padding: 12px 4px;
+}
+
+.item-row:first-child {
+  border-top: 1px dashed var(--rule-soft);
+}
+
+.item-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.item-row-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.item-row-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.icon-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-soft);
+  font-size: 13px;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.icon-btn:hover {
+  background: var(--oxblood-wash);
+  color: var(--error);
+}
+
+.entry-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 680px;
+}
+
+.entry-item {
+  background: var(--page-shade);
+  border-left: 3px solid var(--ink);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 12px 16px;
+}
+
+.entry-item-date {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  background: var(--ink-wash);
+  border-radius: 3px;
+  padding: 2px 7px;
+  margin-bottom: 8px;
+}
+
+.entry-item-text {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* ============================================================
+   Responsive tweaks
+   ============================================================ */
+
+@media (max-width: 720px) {
+  .app {
+    padding: 20px 10px 40px;
+  }
+  .container {
+    padding: 22px 18px 20px 26px;
+  }
+  .container::before {
+    left: 10px;
+  }
+  .grid-header,
+  .slot-row {
+    grid-template-columns: 46px repeat(5, 1fr);
+    gap: 3px;
+  }
+  .time-col {
+    font-size: 10px;
+    padding: 4px;
+  }
+  .day-header {
+    padding: 4px 2px;
+  }
+  .day-header-name {
+    font-size: 10px;
+  }
+  .day-header-date {
+    font-size: 16px;
+  }
+  .lunch-handle-text {
+    display: none;
+  }
+  .slot-cell {
+    min-height: 48px;
+    padding: 4px;
+    font-size: 12px;
+  }
+  .slot-cell.free .free-label {
+    display: none;
+  }
+  .app-title {
+    font-size: 24px;
+  }
+  .week-nav {
+    gap: 8px;
+  }
+  .nav-label {
+    display: none;
+  }
+  .home-index-item {
+    grid-template-columns: 4px 1fr;
+  }
+  .home-index-arrow {
+    display: none;
+  }
+  .home-index-leader {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .lunch-cell-text {
+    font-size: 10px;
+  }
+  .lunch-icon {
+    font-size: 13px;
+  }
+  .month-cell {
+    min-height: 30px;
+    font-size: 11px;
+  }
+  .day-strip-chip {
+    padding: 7px 4px;
+  }
+  .day-strip-day {
+    font-size: 15px;
+  }
+}
