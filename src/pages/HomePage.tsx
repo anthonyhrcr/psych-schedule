@@ -14,6 +14,7 @@ export function HomePage({ lang, onToggleLang, onNavigate }: Props) {
     { page: "agenda", tab: "var(--ink)", title: t(lang, "navAgenda"), desc: t(lang, "navAgendaDesc") },
     { page: "patients", tab: "var(--brass)", title: t(lang, "navPatients"), desc: t(lang, "navPatientsDesc") },
     { page: "evolution", tab: "var(--oxblood)", title: t(lang, "navEvolution"), desc: t(lang, "navEvolutionDesc") },
+    { page: "history", tab: "var(--text-muted)", title: t(lang, "navHistory"), desc: t(lang, "navHistoryDesc") },
   ];
 
   return (

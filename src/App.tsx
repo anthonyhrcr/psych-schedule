@@ -6,6 +6,7 @@ import { HomePage } from "./pages/HomePage";
 import { AgendaPage } from "./pages/AgendaPage";
 import { PatientsPage } from "./pages/PatientsPage";
 import { EvolutionPage } from "./pages/EvolutionPage";
+import { HistoryPage } from "./pages/HistoryPage";
 import { t } from "./i18n";
 import "./styles.css";
 
@@ -42,6 +43,9 @@ export default function App() {
             onBack={goHome}
             onGoToPatients={() => setPage("patients")}
           />
+        )}
+        {page === "history" && (
+          <HistoryPage lang={lang} onToggleLang={toggleLang} onBack={goHome} />
         )}
 
         <footer className="footer">

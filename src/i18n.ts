@@ -34,7 +34,7 @@ const en: Dict = {
   escToCancel: "Press Esc to cancel",
   monFri: "Mon – Fri",
   homeTitle: "The Practice Diary",
-  homeSubtitle: "Three sections, one week at a time.",
+  homeSubtitle: "Book the week, keep the record.",
   backToHome: "Back",
   navAgenda: "Agenda",
   navAgendaDesc: "Book the week, hour by hour.",
@@ -56,6 +56,27 @@ const en: Dict = {
   newEntryPlaceholder: "What happened in today's session…",
   addEntryBtn: "Save note",
   noEntriesYet: "This chart is empty. The first note starts it.",
+  navHistory: "History",
+  navHistoryDesc: "Every session on record, and your backup.",
+  historyTitle: "History",
+  historySubtitle: "Everything booked so far, and a copy you can keep.",
+  statSessions: "sessions",
+  statDays: "days booked",
+  statPatients: "patients seen",
+  statRange: "covering",
+  filterByPatient: "Show",
+  allPatients: "Everyone",
+  sessionsSuffix: "booked",
+  noHistory: "Nothing booked yet. Sessions appear here as you add them.",
+  exportBackup: "Download a backup",
+  importBackup: "Restore from file",
+  backupHint:
+    "The backup is a single file holding every session, patient, and note. Restoring merges it in: dates in the file replace what is on this device, and anything else is left alone.",
+  exportDone: "Backup downloaded.",
+  // Label/value form so the message reads correctly at any count, including 1.
+  importDone:
+    "Restored — sessions: {sessions} · days: {days} · patients added: {patients} · notes added: {notes}",
+  importInvalid: "That file isn't a backup from this app.",
 };
 
 const pt: Dict = {
@@ -90,7 +111,7 @@ const pt: Dict = {
   escToCancel: "Pressione Esc para cancelar",
   monFri: "Seg – Sex",
   homeTitle: "Diário da Prática",
-  homeSubtitle: "Três seções, uma semana por vez.",
+  homeSubtitle: "Marque a semana, guarde o registro.",
   backToHome: "Voltar",
   navAgenda: "Agenda",
   navAgendaDesc: "Marque a semana, hora a hora.",
@@ -112,6 +133,26 @@ const pt: Dict = {
   newEntryPlaceholder: "O que aconteceu na sessão de hoje…",
   addEntryBtn: "Salvar anotação",
   noEntriesYet: "Este prontuário está vazio. A primeira anotação começa aqui.",
+  navHistory: "Histórico",
+  navHistoryDesc: "Todas as sessões registradas e seu backup.",
+  historyTitle: "Histórico",
+  historySubtitle: "Tudo o que já foi marcado, e uma cópia para você guardar.",
+  statSessions: "sessões",
+  statDays: "dias com sessão",
+  statPatients: "pacientes atendidos",
+  statRange: "período",
+  filterByPatient: "Mostrar",
+  allPatients: "Todos",
+  sessionsSuffix: "marcadas",
+  noHistory: "Nada marcado ainda. As sessões aparecem aqui conforme você as adiciona.",
+  exportBackup: "Baixar backup",
+  importBackup: "Restaurar de um arquivo",
+  backupHint:
+    "O backup é um único arquivo com todas as sessões, pacientes e anotações. Restaurar faz a junção: as datas do arquivo substituem o que está neste aparelho, e o resto fica intacto.",
+  exportDone: "Backup baixado.",
+  importDone:
+    "Restaurado — sessões: {sessions} · dias: {days} · pacientes adicionados: {patients} · anotações adicionadas: {notes}",
+  importInvalid: "Esse arquivo não é um backup deste aplicativo.",
 };
 
 const DICTIONARIES: Record<Lang, Dict> = { en, pt };

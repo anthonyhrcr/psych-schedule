@@ -6,7 +6,7 @@ browser — there is no backend, no account, and no network call.
 
 Available in Portuguese and English, toggled in the top-right corner.
 
-## The three sections
+## The four sections
 
 The home page is a contents list leading to each one.
 
@@ -43,6 +43,21 @@ the patient selector in Evolution.
 Session notes kept per patient. Pick someone from the roster, write an entry,
 and it is filed against them with the date. Entries are listed newest first.
 
+### History
+
+The complete record, and the way to keep it safe.
+
+- **Every session ever booked**, grouped by date, newest first — not just the
+  five days the Agenda has on screen. Filter to a single patient to see only
+  their sessions.
+- **Totals** — sessions, days booked, patients seen, and the span covered.
+- **Download a backup.** One JSON file holding every session, patient, and
+  note. This is the only copy of the data that exists outside the browser, so
+  it is worth taking one regularly.
+- **Restore from file.** Merges a backup back in: dates in the file replace
+  what is on the device, anything else is left alone, and patients and notes
+  are matched by id so restoring twice never duplicates.
+
 ## Getting started
 
 ```bash
@@ -70,8 +85,9 @@ Everything stays in the browser's `localStorage`. There is no backend, no API,
 and no analytics; nothing about a patient ever leaves the device.
 
 The trade-off is that the data lives on exactly one browser on one machine.
-Clearing site data deletes it, and there is no sync or backup — so use it on a
-single device you control, and keep your own copy of anything you cannot lose.
+Clearing site data deletes it and there is no sync, so use it on a single
+device you control and take a backup from the History section regularly —
+that downloaded file is the only copy that survives the browser.
 
 ## Keyboard and mouse
 

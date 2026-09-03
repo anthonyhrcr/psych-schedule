@@ -7,7 +7,12 @@ import {
   getMondayOf,
   fromISODate,
   toISODate,
+  addDays,
+  DAY_KEY_PREFIX,
+  WEEK_KEY_PREFIX,
+  LEGACY_WEEK_KEY_PREFIX,
   DaySlots,
+  SchedulePayload,
   WeekPayload,
   LANG_STORAGE_KEY,
   LUNCH_CONFIG_KEY,
@@ -19,6 +24,15 @@ import {
 import { Patient, PATIENTS_STORAGE_KEY } from "./patients";
 import { EvolutionEntry, EVOLUTION_STORAGE_KEY } from "./evolution";
 
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+function safeKeys(): string[] {
+  try {
+    return Object.keys(localStorage);
+  } catch {
+    return [];
+  }
+}
 function safeRead(key: string): string | null {
   try {
     return localStorage.getItem(key);
@@ -176,4 +190,143 @@ export function loadEvolutionEntries(): EvolutionEntry[] {
 
 export function saveEvolutionEntries(entries: EvolutionEntry[]): void {
   safeWrite(EVOLUTION_STORAGE_KEY, JSON.stringify(entries));
+}
+
+/**
+ * Every day ever recorded, across all storage versions.
+ *
+ * Legacy week payloads only migrate when their date is visited, so a history
+ * built from v3 keys alone would silently omit weeks the user never scrolled
+ * back to. This folds those in too, without rewriting them — reading history
+ * should not mutate storage.
+ */
+export function loadAllDays(): SchedulePayload {
+  const days: SchedulePayload = {};
+
+  for (const key of safeKeys()) {
+    if (!key.startsWith(DAY_KEY_PREFIX)) continue;
+    const iso = key.slice(DAY_KEY_PREFIX.length);
+    if (!ISO_DATE.test(iso)) continue;
+    const slots = parseObject<DaySlots>(safeRead(key));
+    if (slots && Object.keys(slots).length > 0) days[iso] = slots;
+  }
+
+  const addLegacyWeek = (mondayISO: string, week: WeekPayload, shift: boolean) => {
+    const monday = fromISODate(mondayISO);
+    for (const [columnKey, slots] of Object.entries(week)) {
+      const column = Number(columnKey);
+      if (!Number.isInteger(column) || column < 0 || column > 4) continue;
+      const iso = toISODate(addDays(monday, column));
+      if (days[iso]) continue; // a migrated v3 day already won
+      const resolved = shift ? migrateSlots(slots) : slots;
+      if (Object.keys(resolved).length > 0) days[iso] = resolved;
+    }
+  };
+
+  for (const key of safeKeys()) {
+    if (key.startsWith(WEEK_KEY_PREFIX)) {
+      const iso = key.slice(WEEK_KEY_PREFIX.length);
+      if (!ISO_DATE.test(iso)) continue;
+      const week = parseObject<WeekPayload>(safeRead(key));
+      if (week) addLegacyWeek(iso, week, false);
+    } else if (key.startsWith(LEGACY_WEEK_KEY_PREFIX)) {
+      // This prefix also covers the patients/evolution/lunch keys, so the
+      // suffix must actually look like a date before it is treated as a week.
+      const iso = key.slice(LEGACY_WEEK_KEY_PREFIX.length);
+      if (!ISO_DATE.test(iso)) continue;
+      const week = parseObject<WeekPayload>(safeRead(key));
+      if (week) addLegacyWeek(iso, week, true);
+    }
+  }
+
+  return days;
+}
+
+// --- Backup ----------------------------------------------------------------
+
+export type BackupBundle = {
+  format: "psych-schedule-backup";
+  version: 1;
+  exportedAt: string;
+  days: SchedulePayload;
+  patients: Patient[];
+  evolution: EvolutionEntry[];
+  lunch: LunchConfigByWeekday;
+};
+
+export function buildBackup(): BackupBundle {
+  return {
+    format: "psych-schedule-backup",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    days: loadAllDays(),
+    patients: loadPatients(),
+    evolution: loadEvolutionEntries(),
+    lunch: loadLunchConfig(),
+  };
+}
+
+export type RestoreResult = {
+  days: number;
+  sessions: number;
+  patients: number;
+  notes: number;
+};
+
+/** Reject anything that is not recognisably one of our backup files. */
+export function parseBackup(raw: string): BackupBundle | null {
+  const parsed = parseObject<Partial<BackupBundle>>(raw);
+  if (!parsed) return null;
+  if (parsed.format !== "psych-schedule-backup") return null;
+  if (!parsed.days || typeof parsed.days !== "object") return null;
+  return {
+    format: "psych-schedule-backup",
+    version: 1,
+    exportedAt: typeof parsed.exportedAt === "string" ? parsed.exportedAt : "",
+    days: parsed.days as SchedulePayload,
+    patients: Array.isArray(parsed.patients) ? parsed.patients : [],
+    evolution: Array.isArray(parsed.evolution) ? parsed.evolution : [],
+    lunch: parsed.lunch && typeof parsed.lunch === "object" ? parsed.lunch : {},
+  };
+}
+
+/**
+ * Merge a backup into this device. Dates present in the file replace what is
+ * held for those dates; dates absent from the file are left alone. Patients
+ * and notes are unioned by id, so restoring twice is harmless.
+ */
+export function restoreBackup(bundle: BackupBundle): RestoreResult {
+  let sessions = 0;
+  let days = 0;
+  for (const [iso, slots] of Object.entries(bundle.days)) {
+    if (!ISO_DATE.test(iso) || !slots || typeof slots !== "object") continue;
+    saveDay(iso, slots);
+    days += 1;
+    sessions += Object.keys(slots).length;
+  }
+
+  const existingPatients = loadPatients();
+  const patientIds = new Set(existingPatients.map((p) => p.id));
+  const addedPatients = bundle.patients.filter((p) => p && p.id && !patientIds.has(p.id));
+  if (addedPatients.length > 0) {
+    savePatients([...existingPatients, ...addedPatients]);
+  }
+
+  const existingNotes = loadEvolutionEntries();
+  const noteIds = new Set(existingNotes.map((e) => e.id));
+  const addedNotes = bundle.evolution.filter((e) => e && e.id && !noteIds.has(e.id));
+  if (addedNotes.length > 0) {
+    saveEvolutionEntries([...existingNotes, ...addedNotes]);
+  }
+
+  if (Object.keys(bundle.lunch).length > 0) {
+    saveLunchConfig({ ...loadLunchConfig(), ...bundle.lunch });
+  }
+
+  return {
+    days,
+    sessions,
+    patients: addedPatients.length,
+    notes: addedNotes.length,
+  };
 }
