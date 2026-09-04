@@ -1,0 +1,3 @@
+# A private practice tool. Reachable by link, kept out of search results.
+User-agent: *
+Disallow: /

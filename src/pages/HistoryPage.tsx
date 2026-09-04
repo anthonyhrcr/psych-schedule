@@ -9,17 +9,19 @@ import {
   RestoreResult,
 } from "../lib/storage";
 import { PageHeader } from "../components/PageHeader";
+import { SecurityPanel } from "../components/SecurityPanel";
 import { t } from "../i18n";
 
 type Props = {
   lang: Lang;
   onToggleLang: () => void;
   onBack: () => void;
+  onLock: () => void;
 };
 
 type Notice = { kind: "ok" | "error"; text: string };
 
-export function HistoryPage({ lang, onToggleLang, onBack }: Props) {
+export function HistoryPage({ lang, onToggleLang, onBack, onLock }: Props) {
   // Bumping this re-reads storage after a restore.
   const [revision, setRevision] = useState(0);
   const [patientFilter, setPatientFilter] = useState("");
@@ -161,6 +163,12 @@ export function HistoryPage({ lang, onToggleLang, onBack }: Props) {
               {notice.text}
             </p>
           )}
+
+          <SecurityPanel
+            lang={lang}
+            onLock={onLock}
+            onChanged={() => setRevision((r) => r + 1)}
+          />
         </div>
 
         {grouped.length === 0 ? (

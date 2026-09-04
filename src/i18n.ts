@@ -77,6 +77,33 @@ const en: Dict = {
   importDone:
     "Restored — sessions: {sessions} · days: {days} · patients added: {patients} · notes added: {notes}",
   importInvalid: "That file isn't a backup from this app.",
+  lockTitle: "Locked",
+  lockSubtitle: "Enter your passcode to open the diary.",
+  lockHint:
+    "The passcode is not stored anywhere. Your records are encrypted with it, so only this passcode can open them.",
+  passcode: "Passcode",
+  unlockBtn: "Unlock",
+  unlocking: "Unlocking\u2026",
+  wrongPasscode: "That passcode doesn't open this diary.",
+  securityTitle: "Lock",
+  lockOn: "This diary is locked. Records are encrypted on this device.",
+  lockOff: "This diary is not locked. Anyone who opens this browser can read it.",
+  setPasscode: "Set a passcode",
+  setPasscodeHint:
+    "Encrypts every session, patient and note on this device. Without the passcode they cannot be read \u2014 not even by opening the browser's storage.",
+  newPasscode: "Passcode (at least 6 characters)",
+  confirmPasscode: "Repeat it",
+  passcodeWarning:
+    "There is no way to reset this. If you forget the passcode, the records on this device are gone for good. Download a backup first \u2014 the backup file is not encrypted, so keep it somewhere safe.",
+  backupConfirm: "I have downloaded a backup and stored it somewhere safe.",
+  turnOnLock: "Turn on the lock",
+  encrypting: "Encrypting\u2026",
+  passcodeTooShort: "Use at least 6 characters.",
+  passcodeMismatch: "The two entries don't match.",
+  lockNow: "Lock now",
+  removePasscode: "Remove the passcode",
+  removePasscodeHint:
+    "Removing it decrypts everything back onto this device in plain form.",
 };
 
 const pt: Dict = {
@@ -152,7 +179,34 @@ const pt: Dict = {
   exportDone: "Backup baixado.",
   importDone:
     "Restaurado — sessões: {sessions} · dias: {days} · pacientes adicionados: {patients} · anotações adicionadas: {notes}",
-  importInvalid: "Esse arquivo não é um backup deste aplicativo.",
+  importInvalid: "Esse arquivo n\u00e3o \u00e9 um backup deste aplicativo.",
+  lockTitle: "Bloqueado",
+  lockSubtitle: "Digite sua senha para abrir o di\u00e1rio.",
+  lockHint:
+    "A senha n\u00e3o fica guardada em lugar nenhum. Seus registros s\u00e3o criptografados com ela, ent\u00e3o s\u00f3 essa senha consegue abri-los.",
+  passcode: "Senha",
+  unlockBtn: "Desbloquear",
+  unlocking: "Abrindo\u2026",
+  wrongPasscode: "Essa senha n\u00e3o abre este di\u00e1rio.",
+  securityTitle: "Bloqueio",
+  lockOn: "Este di\u00e1rio est\u00e1 bloqueado. Os registros est\u00e3o criptografados neste aparelho.",
+  lockOff: "Este di\u00e1rio n\u00e3o est\u00e1 bloqueado. Qualquer pessoa que abrir este navegador pode ler.",
+  setPasscode: "Definir uma senha",
+  setPasscodeHint:
+    "Criptografa todas as sess\u00f5es, pacientes e anota\u00e7\u00f5es neste aparelho. Sem a senha n\u00e3o d\u00e1 para ler \u2014 nem abrindo o armazenamento do navegador.",
+  newPasscode: "Senha (no m\u00ednimo 6 caracteres)",
+  confirmPasscode: "Repita a senha",
+  passcodeWarning:
+    "N\u00e3o existe como recuperar. Se voc\u00ea esquecer a senha, os registros deste aparelho ser\u00e3o perdidos de vez. Baixe um backup antes \u2014 o arquivo de backup n\u00e3o \u00e9 criptografado, ent\u00e3o guarde-o em lugar seguro.",
+  backupConfirm: "J\u00e1 baixei um backup e guardei em lugar seguro.",
+  turnOnLock: "Ativar o bloqueio",
+  encrypting: "Criptografando\u2026",
+  passcodeTooShort: "Use pelo menos 6 caracteres.",
+  passcodeMismatch: "As duas senhas n\u00e3o s\u00e3o iguais.",
+  lockNow: "Bloquear agora",
+  removePasscode: "Remover a senha",
+  removePasscodeHint:
+    "Ao remover, tudo volta a ficar sem criptografia neste aparelho.",
 };
 
 const DICTIONARIES: Record<Lang, Dict> = { en, pt };

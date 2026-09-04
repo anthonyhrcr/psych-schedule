@@ -23,8 +23,143 @@ import {
 } from "./schedule";
 import { Patient, PATIENTS_STORAGE_KEY } from "./patients";
 import { EvolutionEntry, EVOLUTION_STORAGE_KEY } from "./evolution";
+import {
+  VAULT_KEY,
+  VaultData,
+  deriveKey,
+  encryptVault,
+  decryptVault,
+  parseVaultBlob,
+  randomBytes,
+  saltOf,
+} from "./vault";
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+// --- Locked mode -----------------------------------------------------------
+//
+// With a passcode set, every accessor below reads and writes an in-memory
+// mirror instead of localStorage, and that mirror is encrypted back to a
+// single key after each change. Keeping the mirror synchronous is what lets
+// the rest of the app stay unchanged — only unlocking is async.
+
+type Session = { key: CryptoKey; salt: Uint8Array; data: VaultData };
+let session: Session | null = null;
+
+/** True when this browser holds an encrypted vault. */
+export function hasPasscode(): boolean {
+  return parseVaultBlob(safeRead(VAULT_KEY)) !== null;
+}
+
+export function isUnlocked(): boolean {
+  return session !== null;
+}
+
+let persistTimer: ReturnType<typeof setTimeout> | null = null;
+
+async function persistNow(): Promise<void> {
+  if (!session) return;
+  const blob = await encryptVault(session.key, session.salt, session.data);
+  safeWrite(VAULT_KEY, JSON.stringify(blob));
+}
+
+function schedulePersist(): void {
+  if (!session) return;
+  if (persistTimer !== null) clearTimeout(persistTimer);
+  persistTimer = setTimeout(() => {
+    persistTimer = null;
+    void persistNow();
+  }, 120);
+}
+
+// A tab can be closed between a change and its debounced write; flush first.
+if (typeof window !== "undefined") {
+  window.addEventListener("pagehide", () => {
+    if (persistTimer !== null) {
+      clearTimeout(persistTimer);
+      persistTimer = null;
+      void persistNow();
+    }
+  });
+}
+
+function emptyVault(): VaultData {
+  return { days: {}, patients: [], evolution: [], lunch: {} };
+}
+
+/** Gather everything currently held in plaintext, for migration into a vault. */
+function collectPlaintext(): VaultData {
+  return {
+    days: loadAllDays(),
+    patients: loadPatients(),
+    evolution: loadEvolutionEntries(),
+    lunch: loadLunchConfig(),
+  };
+}
+
+function clearPlaintextKeys(): void {
+  for (const key of safeKeys()) {
+    if (key === LANG_STORAGE_KEY || key === VAULT_KEY) continue;
+    if (key.startsWith("psych-schedule:")) {
+      try {
+        localStorage.removeItem(key);
+      } catch {
+        // Ignore.
+      }
+    }
+  }
+}
+
+/** Turn the lock on: encrypt what is here, then remove the plaintext. */
+export async function enablePasscode(passcode: string): Promise<void> {
+  const salt = randomBytes(16);
+  const key = await deriveKey(passcode, salt);
+  const data = collectPlaintext();
+  session = { key, salt, data };
+  await persistNow();
+  clearPlaintextKeys();
+}
+
+/** Wrong passcode returns false and leaves the app locked. */
+export async function unlock(passcode: string): Promise<boolean> {
+  const blob = parseVaultBlob(safeRead(VAULT_KEY));
+  if (!blob) return false;
+  const salt = saltOf(blob);
+  const key = await deriveKey(passcode, salt);
+  const data = await decryptVault(key, blob);
+  if (!data) return false;
+  session = {
+    key,
+    salt,
+    data: { ...emptyVault(), ...data },
+  };
+  return true;
+}
+
+export function lock(): void {
+  if (persistTimer !== null) {
+    clearTimeout(persistTimer);
+    persistTimer = null;
+    void persistNow();
+  }
+  session = null;
+}
+
+/** Turn the lock off: write everything back as plaintext and drop the vault. */
+export function disablePasscode(): void {
+  if (!session) return;
+  const data = session.data;
+  session = null;
+  for (const [iso, slots] of Object.entries(data.days)) saveDay(iso, slots);
+  savePatients(data.patients);
+  saveEvolutionEntries(data.evolution);
+  saveLunchConfig(data.lunch);
+  try {
+    localStorage.removeItem(VAULT_KEY);
+  } catch {
+    // Ignore.
+  }
+}
 
 function safeKeys(): string[] {
   try {
@@ -97,6 +232,8 @@ function loadFromLegacyWeek(dateISO: string): DaySlots | null {
  * read and rewritten under the date key, so this runs once per date.
  */
 export function loadDay(dateISO: string): DaySlots {
+  if (session) return session.data.days[dateISO] ?? {};
+
   const current = parseObject<DaySlots>(safeRead(dayKey(dateISO)));
   if (current) return current;
 
@@ -111,6 +248,11 @@ export function loadDay(dateISO: string): DaySlots {
 /** Always writes, even when empty, so a migration cannot re-fire and
     resurrect bookings the user has since cleared. */
 export function saveDay(dateISO: string, slots: DaySlots): void {
+  if (session) {
+    session.data.days[dateISO] = slots;
+    schedulePersist();
+    return;
+  }
   safeWrite(dayKey(dateISO), JSON.stringify(slots));
 }
 
@@ -132,6 +274,8 @@ export function saveLanguage(lang: Lang): void {
  * weekday (0 = Sunday). Columns 0–4 were Monday–Friday, i.e. weekdays 1–5.
  */
 export function loadLunchConfig(): LunchConfigByWeekday {
+  if (session) return session.data.lunch;
+
   const current = parseObject<LunchConfigByWeekday>(safeRead(LUNCH_CONFIG_KEY));
   if (current) return current;
 
@@ -149,6 +293,11 @@ export function loadLunchConfig(): LunchConfigByWeekday {
 }
 
 export function saveLunchConfig(config: LunchConfigByWeekday): void {
+  if (session) {
+    session.data.lunch = config;
+    schedulePersist();
+    return;
+  }
   safeWrite(LUNCH_CONFIG_KEY, JSON.stringify(config));
 }
 
@@ -161,6 +310,8 @@ export function getLunchForWeekday(
 }
 
 export function loadPatients(): Patient[] {
+  if (session) return session.data.patients;
+
   const raw = safeRead(PATIENTS_STORAGE_KEY);
   if (!raw) return [];
   try {
@@ -173,10 +324,17 @@ export function loadPatients(): Patient[] {
 }
 
 export function savePatients(patients: Patient[]): void {
+  if (session) {
+    session.data.patients = patients;
+    schedulePersist();
+    return;
+  }
   safeWrite(PATIENTS_STORAGE_KEY, JSON.stringify(patients));
 }
 
 export function loadEvolutionEntries(): EvolutionEntry[] {
+  if (session) return session.data.evolution;
+
   const raw = safeRead(EVOLUTION_STORAGE_KEY);
   if (!raw) return [];
   try {
@@ -189,6 +347,11 @@ export function loadEvolutionEntries(): EvolutionEntry[] {
 }
 
 export function saveEvolutionEntries(entries: EvolutionEntry[]): void {
+  if (session) {
+    session.data.evolution = entries;
+    schedulePersist();
+    return;
+  }
   safeWrite(EVOLUTION_STORAGE_KEY, JSON.stringify(entries));
 }
 
@@ -201,6 +364,8 @@ export function saveEvolutionEntries(entries: EvolutionEntry[]): void {
  * should not mutate storage.
  */
 export function loadAllDays(): SchedulePayload {
+  if (session) return { ...session.data.days };
+
   const days: SchedulePayload = {};
 
   for (const key of safeKeys()) {

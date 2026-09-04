@@ -29,14 +29,8 @@
   --radius: 4px;
   --radius-sm: 3px;
   --cell-h: 56px;
-  /* --- Type system -------------------------------------------------------
-     Active: DM Sans throughout, for a quieter, more clinical register.
-     To restore the literary diary voice, swap the two --font-display /
-     --font-body lines below for the commented pair.
-
-     --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
-     --font-body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-  */
+  /* DM Sans throughout, for a quiet, clinical register; IBM Plex Mono
+     carries the hours, dates and labels. */
   --font-display: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-body: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
@@ -1543,6 +1537,92 @@ select {
   font-size: 14px;
   color: var(--text);
   overflow-wrap: break-word;
+}
+
+/* ============================================================
+   Lock screen and security controls
+   ============================================================ */
+
+.lock-screen {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.lock-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--page);
+  border-radius: 6px;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.15);
+  padding: 30px 28px;
+  animation: page-settle 0.4s ease both;
+}
+
+.lock-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.lock-form .primary-btn {
+  margin-top: 10px;
+  align-self: flex-start;
+}
+
+.section-heading {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.security-panel {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--rule-soft);
+}
+
+.security-state {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.notice-warn {
+  margin: 0 0 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #7a4a12;
+  background: var(--brass-wash);
+  border-left: 3px solid var(--brass);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  max-width: 62ch;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text);
+  cursor: pointer;
+  max-width: 62ch;
+}
+
+.checkbox-row input {
+  margin-top: 2px;
+  accent-color: var(--ink);
+  flex-shrink: 0;
 }
 
 /* ============================================================
