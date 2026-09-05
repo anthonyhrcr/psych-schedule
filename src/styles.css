@@ -1561,6 +1561,12 @@ select {
   animation: page-settle 0.4s ease both;
 }
 
+/* The card is narrow, so the full-size title pushes the language toggle onto
+   its own line. Scale it down to keep them on one row. */
+.lock-card .app-title {
+  font-size: clamp(22px, 5vw, 27px);
+}
+
 .lock-form {
   display: flex;
   flex-direction: column;
@@ -1623,6 +1629,23 @@ select {
   margin-top: 2px;
   accent-color: var(--ink);
   flex-shrink: 0;
+}
+
+/* Shown once at signup — has to be readable enough to copy onto paper. */
+.recovery-key {
+  margin: 16px 0 12px;
+  padding: 14px 12px;
+  background: var(--page-shade);
+  border: 1px dashed var(--brass);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  text-align: center;
+  word-break: break-all;
+  user-select: all;
 }
 
 /* ============================================================

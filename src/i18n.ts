@@ -104,6 +104,37 @@ const en: Dict = {
   removePasscode: "Remove the passcode",
   removePasscodeHint:
     "Removing it decrypts everything back onto this device in plain form.",
+  signInSubtitle: "Sign in to open your diary.",
+  emailLabel: "Email",
+  passwordLabel: "Password",
+  signInBtn: "Sign in",
+  signingIn: "Signing in\u2026",
+  signInFailed: "That email and password don't match an account.",
+  inviteOnlyHint:
+    "Accounts are created by the practice. There is no sign-up here \u2014 ask for an invitation if you need access.",
+  keySetupSubtitle: "One step before your diary opens.",
+  keySetupWarning:
+    "Your records are encrypted on this device before they are sent, so the server never sees a patient name or a note. Setting this up creates the key and gives you a recovery key \u2014 the only way back in if you forget your password.",
+  keySetupBtn: "Set up encryption",
+  keySetupFailed: "Could not set up encryption. Check your connection and try again.",
+  recoveryShownSubtitle: "Write this down now. It is shown once and never again.",
+  copyRecoveryKey: "Copy",
+  recoveryShownWarning:
+    "Keep it somewhere separate from your password \u2014 on paper, or in a password manager. If you forget your password and lose this, the records cannot be recovered by anyone, including us.",
+  recoveryStored: "I have stored my recovery key somewhere safe.",
+  continueBtn: "Open the diary",
+  recoverySubtitle:
+    "Your password no longer opens the records \u2014 that happens after a password reset. Enter your recovery key to restore access.",
+  recoveryKeyLabel: "Recovery key",
+  recoverBtn: "Restore access",
+  recoveryFailed: "That recovery key doesn't match this account.",
+  signOut: "Sign out",
+  accountTitle: "Account",
+  signedInAs: "Signed in as",
+  uploadLocal: "Upload this device's records",
+  uploadLocalHint:
+    "Copies what is stored on this device into your account, encrypted. Useful once, when moving off local-only storage.",
+  uploadDone: "Uploaded \u2014 days: {days} \u00b7 patients: {patients} \u00b7 notes: {notes}",
 };
 
 const pt: Dict = {
@@ -207,6 +238,37 @@ const pt: Dict = {
   removePasscode: "Remover a senha",
   removePasscodeHint:
     "Ao remover, tudo volta a ficar sem criptografia neste aparelho.",
+  signInSubtitle: "Entre para abrir seu di\u00e1rio.",
+  emailLabel: "E-mail",
+  passwordLabel: "Senha",
+  signInBtn: "Entrar",
+  signingIn: "Entrando\u2026",
+  signInFailed: "Esse e-mail e senha n\u00e3o correspondem a uma conta.",
+  inviteOnlyHint:
+    "As contas s\u00e3o criadas pelo consult\u00f3rio. N\u00e3o h\u00e1 cadastro aqui \u2014 pe\u00e7a um convite se precisar de acesso.",
+  keySetupSubtitle: "Um passo antes de abrir seu di\u00e1rio.",
+  keySetupWarning:
+    "Seus registros s\u00e3o criptografados neste aparelho antes de sair, ent\u00e3o o servidor nunca v\u00ea o nome de um paciente nem uma anota\u00e7\u00e3o. Esta etapa cria a chave e gera sua chave de recupera\u00e7\u00e3o \u2014 o \u00fanico caminho de volta se voc\u00ea esquecer a senha.",
+  keySetupBtn: "Configurar criptografia",
+  keySetupFailed: "N\u00e3o foi poss\u00edvel configurar. Verifique a conex\u00e3o e tente de novo.",
+  recoveryShownSubtitle: "Anote agora. Ela aparece uma vez e nunca mais.",
+  copyRecoveryKey: "Copiar",
+  recoveryShownWarning:
+    "Guarde em lugar separado da sua senha \u2014 no papel ou num gerenciador de senhas. Se esquecer a senha e perder isto, ningu\u00e9m consegue recuperar os registros, nem n\u00f3s.",
+  recoveryStored: "Guardei minha chave de recupera\u00e7\u00e3o em lugar seguro.",
+  continueBtn: "Abrir o di\u00e1rio",
+  recoverySubtitle:
+    "Sua senha n\u00e3o abre mais os registros \u2014 isso acontece depois de redefinir a senha. Digite sua chave de recupera\u00e7\u00e3o para restaurar o acesso.",
+  recoveryKeyLabel: "Chave de recupera\u00e7\u00e3o",
+  recoverBtn: "Restaurar acesso",
+  recoveryFailed: "Essa chave de recupera\u00e7\u00e3o n\u00e3o corresponde a esta conta.",
+  signOut: "Sair",
+  accountTitle: "Conta",
+  signedInAs: "Conectado como",
+  uploadLocal: "Enviar os registros deste aparelho",
+  uploadLocalHint:
+    "Copia o que est\u00e1 neste aparelho para sua conta, criptografado. \u00datil uma vez, ao sair do armazenamento local.",
+  uploadDone: "Enviado \u2014 dias: {days} \u00b7 pacientes: {patients} \u00b7 anota\u00e7\u00f5es: {notes}",
 };
 
 const DICTIONARIES: Record<Lang, Dict> = { en, pt };

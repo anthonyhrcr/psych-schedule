@@ -1,8 +1,10 @@
 import { useCallback, useState } from "react";
 import { Lang } from "./lib/schedule";
 import { Page } from "./lib/navigation";
-import { loadLanguage, saveLanguage, hasPasscode, isUnlocked, lock } from "./lib/storage";
+import { loadLanguage, saveLanguage, hasPasscode, isUnlocked, lock, isSignedIn } from "./lib/storage";
+import { isBackendConfigured } from "./lib/supabase";
 import { LockScreen } from "./components/LockScreen";
+import { AccountGate } from "./components/AccountGate";
 import { HomePage } from "./pages/HomePage";
 import { AgendaPage } from "./pages/AgendaPage";
 import { PatientsPage } from "./pages/PatientsPage";
@@ -16,6 +18,9 @@ export default function App() {
   const [page, setPage] = useState<Page>("home");
   // Locked when a vault exists and this session has not opened it yet.
   const [locked, setLocked] = useState(() => hasPasscode() && !isUnlocked());
+  // With a backend configured the app is account-based; without one it stays
+  // exactly as it was, working on this device alone.
+  const [signedIn, setSignedIn] = useState(() => isSignedIn());
 
   const toggleLang = useCallback(() => {
     setLang((prev) => {
@@ -32,6 +37,18 @@ export default function App() {
     setPage("home");
     setLocked(true);
   }, []);
+
+  if (isBackendConfigured && !signedIn) {
+    return (
+      <div className="app">
+        <AccountGate
+          lang={lang}
+          onToggleLang={toggleLang}
+          onSignedIn={() => setSignedIn(true)}
+        />
+      </div>
+    );
+  }
 
   if (locked) {
     return (
