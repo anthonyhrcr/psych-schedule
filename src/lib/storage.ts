@@ -46,6 +46,72 @@ const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 type Session = { key: CryptoKey; salt: Uint8Array; data: VaultData };
 let session: Session | null = null;
 
+// --- Account mode ----------------------------------------------------------
+//
+// A signed-in account works the same way as the local vault — a synchronous
+// in-memory mirror — except changes are encrypted and pushed to Supabase
+// rather than written to localStorage. `pushed` holds the last state sent to
+// the server so list writes can be diffed into per-row upserts and deletes.
+
+type Account = {
+  userId: string;
+  master: CryptoKey;
+  data: VaultData;
+  pushed: { patients: Patient[]; evolution: EvolutionEntry[] };
+};
+let account: Account | null = null;
+
+/** Set by the auth layer so storage can push without importing it. */
+let pushHandler: ((change: PendingChange) => void) | null = null;
+
+export type PendingChange =
+  | { kind: "day"; dateISO: string; slots: DaySlots }
+  | { kind: "patients"; next: Patient[]; previous: Patient[] }
+  | { kind: "notes"; next: EvolutionEntry[]; previous: EvolutionEntry[] }
+  | { kind: "settings"; lunch: LunchConfigByWeekday };
+
+export function isSignedIn(): boolean {
+  return account !== null;
+}
+
+export function currentUserId(): string | null {
+  return account?.userId ?? null;
+}
+
+export function currentMasterKey(): CryptoKey | null {
+  return account?.master ?? null;
+}
+
+export function installAccount(
+  userId: string,
+  master: CryptoKey,
+  data: VaultData,
+  onPush: (change: PendingChange) => void
+): void {
+  account = {
+    userId,
+    master,
+    data,
+    pushed: {
+      patients: [...data.patients],
+      evolution: [...data.evolution],
+    },
+  };
+  pushHandler = onPush;
+}
+
+export function clearAccount(): void {
+  account = null;
+  pushHandler = null;
+}
+
+/** The whole in-memory dataset, for pushing a device's data into an account. */
+export function snapshotLocal(): VaultData {
+  if (session) return session.data;
+  if (account) return account.data;
+  return collectPlaintext();
+}
+
 /** True when this browser holds an encrypted vault. */
 export function hasPasscode(): boolean {
   return parseVaultBlob(safeRead(VAULT_KEY)) !== null;
@@ -232,6 +298,7 @@ function loadFromLegacyWeek(dateISO: string): DaySlots | null {
  * read and rewritten under the date key, so this runs once per date.
  */
 export function loadDay(dateISO: string): DaySlots {
+  if (account) return account.data.days[dateISO] ?? {};
   if (session) return session.data.days[dateISO] ?? {};
 
   const current = parseObject<DaySlots>(safeRead(dayKey(dateISO)));
@@ -248,6 +315,11 @@ export function loadDay(dateISO: string): DaySlots {
 /** Always writes, even when empty, so a migration cannot re-fire and
     resurrect bookings the user has since cleared. */
 export function saveDay(dateISO: string, slots: DaySlots): void {
+  if (account) {
+    account.data.days[dateISO] = slots;
+    pushHandler?.({ kind: "day", dateISO, slots });
+    return;
+  }
   if (session) {
     session.data.days[dateISO] = slots;
     schedulePersist();
@@ -274,6 +346,7 @@ export function saveLanguage(lang: Lang): void {
  * weekday (0 = Sunday). Columns 0–4 were Monday–Friday, i.e. weekdays 1–5.
  */
 export function loadLunchConfig(): LunchConfigByWeekday {
+  if (account) return account.data.lunch;
   if (session) return session.data.lunch;
 
   const current = parseObject<LunchConfigByWeekday>(safeRead(LUNCH_CONFIG_KEY));
@@ -293,6 +366,11 @@ export function loadLunchConfig(): LunchConfigByWeekday {
 }
 
 export function saveLunchConfig(config: LunchConfigByWeekday): void {
+  if (account) {
+    account.data.lunch = config;
+    pushHandler?.({ kind: "settings", lunch: config });
+    return;
+  }
   if (session) {
     session.data.lunch = config;
     schedulePersist();
@@ -310,6 +388,7 @@ export function getLunchForWeekday(
 }
 
 export function loadPatients(): Patient[] {
+  if (account) return account.data.patients;
   if (session) return session.data.patients;
 
   const raw = safeRead(PATIENTS_STORAGE_KEY);
@@ -324,6 +403,13 @@ export function loadPatients(): Patient[] {
 }
 
 export function savePatients(patients: Patient[]): void {
+  if (account) {
+    const previous = account.pushed.patients;
+    account.data.patients = patients;
+    account.pushed.patients = [...patients];
+    pushHandler?.({ kind: "patients", next: patients, previous });
+    return;
+  }
   if (session) {
     session.data.patients = patients;
     schedulePersist();
@@ -333,6 +419,7 @@ export function savePatients(patients: Patient[]): void {
 }
 
 export function loadEvolutionEntries(): EvolutionEntry[] {
+  if (account) return account.data.evolution;
   if (session) return session.data.evolution;
 
   const raw = safeRead(EVOLUTION_STORAGE_KEY);
@@ -347,6 +434,13 @@ export function loadEvolutionEntries(): EvolutionEntry[] {
 }
 
 export function saveEvolutionEntries(entries: EvolutionEntry[]): void {
+  if (account) {
+    const previous = account.pushed.evolution;
+    account.data.evolution = entries;
+    account.pushed.evolution = [...entries];
+    pushHandler?.({ kind: "notes", next: entries, previous });
+    return;
+  }
   if (session) {
     session.data.evolution = entries;
     schedulePersist();
@@ -364,6 +458,7 @@ export function saveEvolutionEntries(entries: EvolutionEntry[]): void {
  * should not mutate storage.
  */
 export function loadAllDays(): SchedulePayload {
+  if (account) return { ...account.data.days };
   if (session) return { ...session.data.days };
 
   const days: SchedulePayload = {};
