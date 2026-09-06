@@ -105,13 +105,6 @@ export function clearAccount(): void {
   pushHandler = null;
 }
 
-/** The whole in-memory dataset, for pushing a device's data into an account. */
-export function snapshotLocal(): VaultData {
-  if (session) return session.data;
-  if (account) return account.data;
-  return collectPlaintext();
-}
-
 /** True when this browser holds an encrypted vault. */
 export function hasPasscode(): boolean {
   return parseVaultBlob(safeRead(VAULT_KEY)) !== null;
@@ -460,7 +453,11 @@ export function saveEvolutionEntries(entries: EvolutionEntry[]): void {
 export function loadAllDays(): SchedulePayload {
   if (account) return { ...account.data.days };
   if (session) return { ...session.data.days };
+  return diskDays();
+}
 
+/** The day scan on its own, so device data can be read past an account. */
+function diskDays(): SchedulePayload {
   const days: SchedulePayload = {};
 
   for (const key of safeKeys()) {
@@ -500,6 +497,48 @@ export function loadAllDays(): SchedulePayload {
   }
 
   return days;
+}
+
+/**
+ * What this browser holds, ignoring any signed-in account.
+ *
+ * The ordinary accessors answer from the account once one is active, which is
+ * right everywhere else but useless for deciding whether there is local data
+ * worth uploading. These deliberately look past it.
+ */
+export function readDeviceData(): VaultData {
+  if (session) return session.data;
+  return {
+    days: diskDays(),
+    patients: parseArray<Patient>(safeRead(PATIENTS_STORAGE_KEY)),
+    evolution: parseArray<EvolutionEntry>(safeRead(EVOLUTION_STORAGE_KEY)),
+    lunch: parseObject<LunchConfigByWeekday>(safeRead(LUNCH_CONFIG_KEY)) ?? {},
+  };
+}
+
+/** How much is sitting on this device — used to offer a one-time upload. */
+export function deviceDataCounts(): { sessions: number; patients: number; notes: number } {
+  const data = readDeviceData();
+  let sessions = 0;
+  for (const slots of Object.values(data.days)) {
+    sessions += Object.keys(slots).length;
+  }
+  return {
+    sessions,
+    patients: data.patients.length,
+    notes: data.evolution.length,
+  };
+}
+
+function parseArray<T>(raw: string | null): T[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed as T[];
+  } catch {
+    // Fall through.
+  }
+  return [];
 }
 
 // --- Backup ----------------------------------------------------------------

@@ -1,10 +1,19 @@
 import { useCallback, useState } from "react";
 import { Lang } from "./lib/schedule";
 import { Page } from "./lib/navigation";
-import { loadLanguage, saveLanguage, hasPasscode, isUnlocked, lock, isSignedIn } from "./lib/storage";
+import {
+  loadLanguage,
+  saveLanguage,
+  hasPasscode,
+  isUnlocked,
+  lock,
+  isSignedIn,
+  deviceDataCounts,
+} from "./lib/storage";
 import { isBackendConfigured } from "./lib/supabase";
 import { LockScreen } from "./components/LockScreen";
 import { AccountGate } from "./components/AccountGate";
+import { MigrationPrompt } from "./components/MigrationPrompt";
 import { HomePage } from "./pages/HomePage";
 import { AgendaPage } from "./pages/AgendaPage";
 import { PatientsPage } from "./pages/PatientsPage";
@@ -21,6 +30,13 @@ export default function App() {
   // With a backend configured the app is account-based; without one it stays
   // exactly as it was, working on this device alone.
   const [signedIn, setSignedIn] = useState(() => isSignedIn());
+  // Records still sitting on this device when an account is opened. Captured
+  // at sign-in so the offer can be made before the diary looks empty.
+  const [pendingUpload, setPendingUpload] = useState<{
+    sessions: number;
+    patients: number;
+    notes: number;
+  } | null>(null);
 
   const toggleLang = useCallback(() => {
     setLang((prev) => {
@@ -44,7 +60,25 @@ export default function App() {
         <AccountGate
           lang={lang}
           onToggleLang={toggleLang}
-          onSignedIn={() => setSignedIn(true)}
+          onSignedIn={() => {
+            const counts = deviceDataCounts();
+            const hasLocal =
+              counts.sessions > 0 || counts.patients > 0 || counts.notes > 0;
+            setPendingUpload(hasLocal ? counts : null);
+            setSignedIn(true);
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (pendingUpload) {
+    return (
+      <div className="app">
+        <MigrationPrompt
+          lang={lang}
+          counts={pendingUpload}
+          onDone={() => setPendingUpload(null)}
         />
       </div>
     );

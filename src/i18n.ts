@@ -135,6 +135,17 @@ const en: Dict = {
   uploadLocalHint:
     "Copies what is stored on this device into your account, encrypted. Useful once, when moving off local-only storage.",
   uploadDone: "Uploaded \u2014 days: {days} \u00b7 patients: {patients} \u00b7 notes: {notes}",
+  migrationTitle: "Records on this device",
+  migrationSubtitle:
+    "This browser still holds records that aren't in your account yet.",
+  migrationCounts:
+    "sessions: {sessions} \u00b7 patients: {patients} \u00b7 notes: {notes}",
+  migrationHint:
+    "Uploading encrypts them and copies them into your account, so they follow you to any device. Nothing on this device is deleted either way, and you can do this later from History.",
+  migrationUpload: "Upload them",
+  migrationUploading: "Uploading\u2026",
+  migrationSkip: "Not now",
+  migrationFailed: "Upload failed. Check your connection and try again.",
 };
 
 const pt: Dict = {
@@ -269,6 +280,17 @@ const pt: Dict = {
   uploadLocalHint:
     "Copia o que est\u00e1 neste aparelho para sua conta, criptografado. \u00datil uma vez, ao sair do armazenamento local.",
   uploadDone: "Enviado \u2014 dias: {days} \u00b7 pacientes: {patients} \u00b7 anota\u00e7\u00f5es: {notes}",
+  migrationTitle: "Registros neste aparelho",
+  migrationSubtitle:
+    "Este navegador ainda guarda registros que n\u00e3o est\u00e3o na sua conta.",
+  migrationCounts:
+    "sess\u00f5es: {sessions} \u00b7 pacientes: {patients} \u00b7 anota\u00e7\u00f5es: {notes}",
+  migrationHint:
+    "Ao enviar, eles s\u00e3o criptografados e copiados para sua conta, passando a acompanhar voc\u00ea em qualquer aparelho. Nada deste aparelho \u00e9 apagado, e voc\u00ea pode fazer isso depois pelo Hist\u00f3rico.",
+  migrationUpload: "Enviar",
+  migrationUploading: "Enviando\u2026",
+  migrationSkip: "Agora n\u00e3o",
+  migrationFailed: "Falha no envio. Verifique a conex\u00e3o e tente de novo.",
 };
 
 const DICTIONARIES: Record<Lang, Dict> = { en, pt };

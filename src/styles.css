@@ -1631,6 +1631,18 @@ select {
   flex-shrink: 0;
 }
 
+.migration-counts {
+  margin: 16px 0 10px;
+  padding: 12px 14px;
+  background: var(--ink-wash);
+  border-left: 3px solid var(--ink);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-deep);
+}
+
 /* Shown once at signup — has to be readable enough to copy onto paper. */
 .recovery-key {
   margin: 16px 0 12px;

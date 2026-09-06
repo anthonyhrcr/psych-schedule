@@ -10,7 +10,7 @@ import { pullAll, pushDay, pushPatients, pushNotes, pushSettings, pushEverything
 import {
   installAccount,
   clearAccount,
-  snapshotLocal,
+  readDeviceData,
   currentMasterKey,
   isSignedIn,
   PendingChange,
@@ -195,9 +195,14 @@ export async function uploadLocalData(): Promise<{
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return null;
 
-  const local: VaultData = snapshotLocal();
+  // Deliberately reads the device rather than the account, which by this
+  // point is already installed and would otherwise echo itself back.
+  const local: VaultData = readDeviceData();
   const master = currentMasterKey();
   if (!master) return null;
 
-  return pushEverything(supabase, master, auth.user.id, local);
+  const result = await pushEverything(supabase, master, auth.user.id, local);
+  // Pull the merged state back so the app shows the uploaded records at once.
+  await activate(auth.user.id, master);
+  return result;
 }
