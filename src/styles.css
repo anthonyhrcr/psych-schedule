@@ -618,6 +618,24 @@ select {
   background: var(--page);
 }
 
+/* Days pass beneath the pinned hours, so the column gets a soft trailing
+   edge rather than a hard seam — it reads as a layer above the content
+   instead of a column butted against it. */
+.time-col:not(.header)::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: 10px;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    rgba(42, 32, 24, 0.07),
+    rgba(42, 32, 24, 0)
+  );
+}
+
 /* ----- Slot cells ----- */
 
 .slot-cell {
@@ -691,6 +709,19 @@ select {
 .slot-cell.free:focus-visible .free-label {
   color: var(--ink-deep);
   opacity: 1;
+}
+
+/* Hiding the prompt until hover is a desktop refinement that becomes a dead
+   grid on touch, where hover never happens. Where there is no hover, the mark
+   stays visible — quiet enough not to shout, present enough to invite a tap. */
+@media (hover: none) {
+  .slot-cell.free .add-icon {
+    opacity: 0.4;
+  }
+  .slot-cell.free:active .add-icon {
+    opacity: 1;
+    color: var(--ink);
+  }
 }
 
 .slot-cell.booked {
@@ -871,7 +902,8 @@ select {
 /* ----- Lunch popover ----- */
 
 .lunch-popover {
-  background: var(--page);
+  background: rgba(245, 236, 216, 0.88);
+  backdrop-filter: blur(14px) saturate(140%);
   border: 1px solid var(--text);
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
@@ -880,6 +912,28 @@ select {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  /* Grows from the handle that opened it, so the link between the control
+     and the panel is spatial rather than something to infer. */
+  transform-origin: top center;
+  animation: popover-in 0.22s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .lunch-popover {
+    background: var(--page);
+    backdrop-filter: none;
+  }
 }
 
 .lunch-popover-title {
