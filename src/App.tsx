@@ -48,8 +48,9 @@ export default function App() {
 
   const goHome = useCallback(() => setPage("home"), []);
 
-  const lockNow = useCallback(() => {
-    lock();
+  const lockNow = useCallback(async () => {
+    // Await the flush so a change made moments before locking is not lost.
+    await lock();
     setPage("home");
     setLocked(true);
   }, []);
