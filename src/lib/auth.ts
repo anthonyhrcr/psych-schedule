@@ -31,6 +31,13 @@ import { VaultData } from "./vault";
  * password in flight. Separating the two would mean two secrets to remember.
  */
 
+/** Last failure from a background push, so sync problems are not invisible. */
+let lastSyncError: string | null = null;
+
+export function getLastSyncError(): string | null {
+  return lastSyncError;
+}
+
 export type SignInOutcome =
   | { status: "ok" }
   | { status: "needs-key-setup" }
@@ -80,8 +87,11 @@ function makePushHandler(userId: string, master: CryptoKey) {
             return pushSettings(supabase, master, userId, change.lunch);
         }
       })
-      // A failed push must not poison the queue for later writes.
-      .catch(() => undefined);
+      // A failed push must not poison the queue for later writes, but it is
+      // recorded rather than discarded so the failure can be surfaced.
+      .catch((e) => {
+        lastSyncError = e instanceof Error ? e.message : String(e);
+      });
   };
 }
 
@@ -201,7 +211,15 @@ export async function uploadLocalData(): Promise<{
   const master = currentMasterKey();
   if (!master) return null;
 
-  const result = await pushEverything(supabase, master, auth.user.id, local);
+  // A partial upload must not report success: the user would be told their
+  // records are safe in the account while some silently never arrived.
+  let result;
+  try {
+    result = await pushEverything(supabase, master, auth.user.id, local);
+  } catch (e) {
+    lastSyncError = e instanceof Error ? e.message : String(e);
+    return null;
+  }
   // Pull the merged state back so the app shows the uploaded records at once.
   await activate(auth.user.id, master);
   return result;

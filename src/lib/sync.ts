@@ -74,13 +74,19 @@ export async function pushDay(
   // An emptied day is removed rather than stored as an empty object, so the
   // server holds no row for a date with nothing on it.
   if (Object.keys(slots).length === 0) {
-    await supabase.from("days").delete().eq("user_id", userId).eq("date", dateISO);
+    const { error } = await supabase
+      .from("days")
+      .delete()
+      .eq("user_id", userId)
+      .eq("date", dateISO);
+    if (error) throw new Error(`day ${dateISO}: ${error.message}`);
     return;
   }
-  await supabase.from("days").upsert(
+  const { error } = await supabase.from("days").upsert(
     { user_id: userId, date: dateISO, content: await encryptRecord(master, slots) },
     { onConflict: "user_id,date" }
   );
+  if (error) throw new Error(`day ${dateISO}: ${error.message}`);
 }
 
 export async function pushPatients(
@@ -106,10 +112,18 @@ export async function pushPatients(
         content: await encryptRecord(master, p),
       }))
     );
-    await supabase.from("patients").upsert(rows, { onConflict: "user_id,id" });
+    const { error } = await supabase
+      .from("patients")
+      .upsert(rows, { onConflict: "user_id,id" });
+    if (error) throw new Error(`patients: ${error.message}`);
   }
   if (removed.length > 0) {
-    await supabase.from("patients").delete().eq("user_id", userId).in("id", removed);
+    const { error } = await supabase
+      .from("patients")
+      .delete()
+      .eq("user_id", userId)
+      .in("id", removed);
+    if (error) throw new Error(`patients: ${error.message}`);
   }
 }
 
@@ -140,10 +154,18 @@ export async function pushNotes(
         content: await encryptRecord(master, e),
       }))
     );
-    await supabase.from("notes").upsert(rows, { onConflict: "user_id,id" });
+    const { error } = await supabase
+      .from("notes")
+      .upsert(rows, { onConflict: "user_id,id" });
+    if (error) throw new Error(`notes: ${error.message}`);
   }
   if (removed.length > 0) {
-    await supabase.from("notes").delete().eq("user_id", userId).in("id", removed);
+    const { error } = await supabase
+      .from("notes")
+      .delete()
+      .eq("user_id", userId)
+      .in("id", removed);
+    if (error) throw new Error(`notes: ${error.message}`);
   }
 }
 
@@ -153,10 +175,11 @@ export async function pushSettings(
   userId: string,
   lunch: LunchConfigByWeekday
 ): Promise<void> {
-  await supabase.from("settings").upsert(
+  const { error } = await supabase.from("settings").upsert(
     { user_id: userId, content: await encryptRecord(master, lunch) },
     { onConflict: "user_id" }
   );
+  if (error) throw new Error(`settings: ${error.message}`);
 }
 
 /** Upload a whole local dataset — used when migrating a device into an account. */
