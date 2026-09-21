@@ -131,14 +131,16 @@ function schedulePersist(): void {
   }, 120);
 }
 
-// A tab can be closed between a change and its debounced write; flush first.
+// A tab can be closed between a change and its debounced write. visibilitychange
+// fires while the page is still alive and is the more reliable of the two, so
+// flush there as well as on pagehide rather than relying on the last moment.
 if (typeof window !== "undefined") {
-  window.addEventListener("pagehide", () => {
-    if (persistTimer !== null) {
-      clearTimeout(persistTimer);
-      persistTimer = null;
-      void persistNow();
-    }
+  const flushOnLeave = () => {
+    if (persistTimer !== null) void flushVault();
+  };
+  window.addEventListener("pagehide", flushOnLeave);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flushOnLeave();
   });
 }
 
@@ -195,12 +197,21 @@ export async function unlock(passcode: string): Promise<boolean> {
   return true;
 }
 
-export function lock(): void {
+/**
+ * Write any pending change immediately. Encryption is async, so a caller that
+ * is about to drop the session — or the page — has to await this or the last
+ * edit is lost between the debounce and the key going away.
+ */
+export async function flushVault(): Promise<void> {
   if (persistTimer !== null) {
     clearTimeout(persistTimer);
     persistTimer = null;
-    void persistNow();
   }
+  await persistNow();
+}
+
+export async function lock(): Promise<void> {
+  await flushVault();
   session = null;
 }
 
