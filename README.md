@@ -69,6 +69,7 @@ Session notes per patient, filed by date, newest first.
 - **App:** React 18, TypeScript, Vite.
 - **Cryptography:** the Web Crypto API (AES-GCM, PBKDF2, key wrapping). No third-party crypto libraries.
 - **Backend (optional):** Supabase, for Postgres, Auth and row-level security. The schema is in [`supabase/schema.sql`](supabase/schema.sql).
+- **Tests:** Vitest (unit) and Playwright (end to end), run in CI on every PR.
 - **Deploy:** GitHub Pages via GitHub Actions.
 
 ```
@@ -98,6 +99,33 @@ Open <http://localhost:5173>. It runs local-only out of the box.
 2. Copy `.env.example` to `.env.local`, then fill in `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
    - Both are public by design. RLS is what protects the data.
    - **Never** use the `service_role` key here.
+
+## Testing
+
+Two suites, weighted towards the places where records could go missing quietly, not towards coverage numbers.
+
+**Unit tests: Vitest, 93 tests** over `src/lib`:
+- version migrations, and backup and restore;
+- the diffing that decides what gets deleted on sync;
+- the failure modes of both encryption paths: wrong passcode, damaged rows, and wrapping and unwrapping keys.
+
+To check the suite actually catches things, three real past bugs were put back in one at a time: an hour-shift in v1 data, a swallowed database error, and a repeating recovery key. Each one turns it red. Writing the suite also exposed a real lost-write bug: `lock()` didn't wait for the encrypted write to finish. That is now fixed.
+
+**End-to-end tests: Playwright, 30 tests** over the local-only flows:
+- booking, multi-fill and lunch overrides on the Agenda;
+- patients, notes and History;
+- backup, restore and the passcode lock;
+- tap behaviour on a mobile device profile (Pixel 7), alongside desktop Chrome.
+
+The app is started with Supabase disabled, so no test touches a real backend.
+
+**CI:** every pull request and every push to `main` runs a type check, the unit tests, a production build, and the Playwright suite.
+
+```bash
+npm test          # unit tests
+npm run coverage  # unit tests with coverage
+npm run e2e       # Playwright (first run: npx playwright install chromium)
+```
 
 ## Build
 
