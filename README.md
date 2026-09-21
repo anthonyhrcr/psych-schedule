@@ -1,13 +1,13 @@
 # Agenda Psi / The Practice Diary
 
-A web app for a psychologist's practice: book sessions, keep a patient roster, and write session notes. It is in daily use by a practising psychologist, and most of its interaction details come from watching her use it.
+A web app for a psychologist's practice: book sessions, keep a patient roster, and write session notes.
 
-**Live:** https://anthonyhrcr.github.io/psych-schedule/ · Portuguese and English, toggled in the top-right corner.
+**Live:** https://anthonyhrcr.github.io/psych-schedule/ (local-only: this deployment has no Supabase keys, so sync is not enabled there) · Portuguese and English, toggled in the top-right corner.
 
 It is **local-first**: everything works on one device with no account and no network. Two optional layers protect the data:
 
 - **Passcode lock:** encrypts everything on the device.
-- **Encrypted sync:** keeps several devices in step through Supabase. It is end to end, so the server only ever stores ciphertext.
+- **Encrypted sync:** keeps several devices in step through Supabase. It is end to end, so the server never sees a patient name, a time or a note.
 
 ## Privacy and security
 
@@ -27,7 +27,10 @@ Session notes are clinical data, so the design starts from "the server should ne
   - once with a key derived from the password;
   - once with a key derived from a **recovery key** shown at signup. It is Crockford base32 with no I/L/O/U, so it can be copied off paper.
 - Either one unlocks the account. Changing the password only re-wraps the key, so the records are never re-encrypted.
-- Supabase stores only the two wrapped keys and encrypted rows.
+- Supabase stores the two wrapped keys and encrypted rows. Patient names, session times and note text are inside the ciphertext. Some metadata stays in the clear so rows can be queried, and the server can see it:
+  - the **dates** that have bookings, and the date of each note;
+  - opaque **patient IDs** (random UUIDs, not names), and so which notes belong to the same patient;
+  - **when** each row was last changed, and **how many** rows exist.
 - **Row-level security** on every table (`auth.uid() = user_id`) means a user can only read or write their own rows, even with the public anon key.
 - On first sign-in, records already on the device can be uploaded into the account.
 - A row that fails to decrypt is skipped rather than locking the whole account.
