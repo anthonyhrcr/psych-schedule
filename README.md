@@ -2,7 +2,7 @@
 
 A web app for a psychologist's practice: book sessions, keep a patient roster, and write session notes.
 
-**Live:** https://anthonyhrcr.github.io/psych-schedule/ (local-only: this deployment has no Supabase keys, so sync is not enabled there) · Portuguese and English, toggled in the top-right corner.
+**Live:** https://www.datapsi.com.br · Portuguese and English, toggled in the top-right corner.
 
 It is **local-first**: everything works on one device with no account and no network. Two optional layers protect the data:
 
@@ -73,7 +73,7 @@ Session notes per patient, filed by date, newest first.
 - **Cryptography:** the Web Crypto API (AES-GCM, PBKDF2, key wrapping). No third-party crypto libraries.
 - **Backend (optional):** Supabase, for Postgres, Auth and row-level security. The schema is in [`supabase/schema.sql`](supabase/schema.sql).
 - **Tests:** Vitest (unit) and Playwright (end to end), run in CI on every PR.
-- **Deploy:** GitHub Pages via GitHub Actions.
+- **Deploy:** Vercel, building `main` on every push. Sync is enabled there by setting the two `VITE_SUPABASE_*` variables in the project's environment; without them the same build runs local-only.
 
 ```
 src/
