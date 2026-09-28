@@ -1641,6 +1641,26 @@ select {
   align-self: flex-start;
 }
 
+/* A quiet way out of the form: present enough to find when a password is
+   lost, subdued enough not to compete with signing in. */
+.link-btn {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  color: var(--ink-deep);
+}
+
 .section-heading {
   margin: 0 0 6px;
   font-family: var(--font-display);
