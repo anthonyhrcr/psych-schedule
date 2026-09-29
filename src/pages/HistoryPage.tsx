@@ -7,9 +7,11 @@ import {
   parseBackup,
   restoreBackup,
   RestoreResult,
+  isSignedIn,
 } from "../lib/storage";
 import { PageHeader } from "../components/PageHeader";
 import { SecurityPanel } from "../components/SecurityPanel";
+import { PasswordPanel } from "../components/PasswordPanel";
 import { t } from "../i18n";
 
 type Props = {
@@ -169,6 +171,10 @@ export function HistoryPage({ lang, onToggleLang, onBack, onLock }: Props) {
             onLock={onLock}
             onChanged={() => setRevision((r) => r + 1)}
           />
+
+          {/* Only an account has a password to change; the local-only diary
+              is guarded by the passcode above and nothing else. */}
+          {isSignedIn() && <PasswordPanel lang={lang} />}
         </div>
 
         {grouped.length === 0 ? (

@@ -1,6 +1,11 @@
 import { describe, it, expect, vi } from "vitest";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { createAccountKeys, unlockWithPassword, WrappedKeys } from "./account";
+import {
+  createAccountKeys,
+  unlockWithPassword,
+  unlockWithRecoveryKey,
+  WrappedKeys,
+} from "./account";
 
 /**
  * A password reset is the one flow that can strand an account: the server can
@@ -17,7 +22,7 @@ vi.mock("./supabase", () => ({
   isBackendConfigured: true,
 }));
 
-const { completePasswordReset, requestPasswordReset } = await import("./auth");
+const { completePasswordReset, requestPasswordReset, changePassword } = await import("./auth");
 
 type Call = { op: string; payload?: unknown };
 
@@ -155,5 +160,43 @@ describe("requesting a reset link", () => {
     const redirectTo = (sent?.payload as { redirectTo: string }).redirectTo;
     expect(redirectTo).not.toContain("#");
     expect(redirectTo).toContain("http");
+  });
+});
+
+describe("changing the password from inside the diary", () => {
+  it("changes nothing when the current password is wrong", async () => {
+    const created = await createAccountKeys("old-password");
+    const { calls } = fakeSupabase({ keyRow: toRow("u1", created.wrapped) });
+
+    const result = await changePassword("not-the-password", "a-new-password");
+
+    expect(result.status).toBe("bad-password");
+    expect(calls.some((c) => c.op === "updateUser")).toBe(false);
+    expect(calls.some((c) => c.op === "upsert:account_keys")).toBe(false);
+  });
+
+  it("re-wraps the key without disturbing the recovery key", async () => {
+    // The panel tells the user their recovery key keeps working. If the
+    // recovery wrap were rebuilt here, the key on their paper would be dead
+    // and they would not find out until the day they needed it.
+    const created = await createAccountKeys("old-password");
+    const { state } = fakeSupabase({ keyRow: toRow("u1", created.wrapped) });
+
+    const result = await changePassword("old-password", "a-new-password");
+
+    expect(result.status).toBe("ok");
+    const stored = toKeys(state.keyRow as Record<string, string>);
+    expect(await unlockWithPassword(stored, "a-new-password")).not.toBeNull();
+    expect(await unlockWithPassword(stored, "old-password")).toBeNull();
+    expect(await unlockWithRecoveryKey(stored, created.recoveryKey)).not.toBeNull();
+  });
+
+  it("reports a refused key write instead of reporting success", async () => {
+    const created = await createAccountKeys("old-password");
+    fakeSupabase({ keyRow: toRow("u1", created.wrapped), failKeyWrite: true });
+
+    const result = await changePassword("old-password", "a-new-password");
+
+    expect(result.status).toBe("failed");
   });
 });
