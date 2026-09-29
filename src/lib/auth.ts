@@ -180,6 +180,106 @@ export async function recoverWithKey(
   return true;
 }
 
+/**
+ * Password reset, in an app whose server cannot decrypt anything.
+ *
+ * The email proves who you are to Supabase, which is enough to change the
+ * sign-in password — and not enough to read a single record. The master key
+ * is wrapped under the old password and nothing on the server can unwrap it.
+ * The recovery key is the second wrap, and the only way back to the records.
+ */
+
+// Read at module load. The Supabase client consumes the link and strips the
+// hash from the URL as soon as it is created, so a later read finds nothing.
+const openedFromRecoveryLink =
+  typeof window !== "undefined" && /[#&]type=recovery/.test(window.location.hash);
+
+export function isPasswordRecoveryLink(): boolean {
+  return openedFromRecoveryLink;
+}
+
+/**
+ * The PKCE variant of the link carries no `type=recovery` in the hash, so the
+ * event is the only signal. Returns an unsubscribe function.
+ */
+export function onPasswordRecovery(cb: () => void): () => void {
+  const supabase = getSupabase();
+  if (!supabase) return () => {};
+  const { data } = supabase.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") cb();
+  });
+  return () => data.subscription.unsubscribe();
+}
+
+/**
+ * Sends the reset link. Success here says only that the request was accepted:
+ * an address without an account gets the same answer, so the form cannot be
+ * used to find out who holds one.
+ */
+export async function requestPasswordReset(email: string): Promise<boolean> {
+  const supabase = getSupabase();
+  if (!supabase) return false;
+  // No routes in this app, so the link comes back to the page it left from.
+  const redirectTo = window.location.href.split("#")[0];
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+  return !error;
+}
+
+export type PasswordResetOutcome =
+  | { status: "ok" }
+  | { status: "bad-key" }
+  | { status: "no-session" }
+  | { status: "failed"; message: string };
+
+/**
+ * Finish a reset: check the recovery key, set the new password, re-wrap.
+ *
+ * The order is the whole point. Changing the password first and checking the
+ * key afterwards would, on a mistyped key, leave the account stranded —
+ * signed in, records unreadable, and the old password no longer a way back.
+ */
+export async function completePasswordReset(
+  recoveryKey: string,
+  newPassword: string
+): Promise<PasswordResetOutcome> {
+  const supabase = getSupabase();
+  if (!supabase) return { status: "failed", message: "no-backend" };
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) return { status: "no-session" };
+
+  const { data: row } = await supabase
+    .from("account_keys")
+    .select("*")
+    .eq("user_id", auth.user.id)
+    .maybeSingle();
+
+  // Invited from the dashboard but never set up: there is no master key to
+  // rescue, so the password is all there is to set. Keys are minted at the
+  // next sign-in, as they would have been anyway.
+  if (!row) {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    return error ? { status: "failed", message: error.message } : { status: "ok" };
+  }
+
+  const keys = rowToWrapped(row as AccountKeysRow);
+  const master = await unlockWithRecoveryKey(keys, recoveryKey);
+  if (!master) return { status: "bad-key" };
+
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) return { status: "failed", message: error.message };
+
+  const rewrapped = await rewrapWithPassword(keys, master, newPassword);
+  // A failed write here would leave the password changed and the wrapped key
+  // still on the old one — the exact state the recovery key had just fixed.
+  const { error: keyError } = await supabase
+    .from("account_keys")
+    .upsert(wrappedToRow(auth.user.id, rewrapped), { onConflict: "user_id" });
+  if (keyError) return { status: "failed", message: keyError.message };
+
+  await activate(auth.user.id, master);
+  return { status: "ok" };
+}
+
 /** Restore a session left from a previous visit, if the key can be unwrapped. */
 export async function resumeSession(): Promise<boolean> {
   const supabase = getSupabase();
