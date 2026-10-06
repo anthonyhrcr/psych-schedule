@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { Lang } from "./lib/schedule";
-import { Page } from "./lib/navigation";
+import { Page, isLegalPage } from "./lib/navigation";
 import {
   loadLanguage,
   saveLanguage,
@@ -14,6 +14,11 @@ import { isBackendConfigured } from "./lib/supabase";
 import { LockScreen } from "./components/LockScreen";
 import { AccountGate } from "./components/AccountGate";
 import { MigrationPrompt } from "./components/MigrationPrompt";
+import { LegalPage } from "./components/LegalPage";
+import { LegalLinks } from "./components/LegalLinks";
+import { privacy } from "./legal/privacy";
+import { terms } from "./legal/terms";
+import { cookies } from "./legal/cookies";
 import { HomePage } from "./pages/HomePage";
 import { AgendaPage } from "./pages/AgendaPage";
 import { PatientsPage } from "./pages/PatientsPage";
@@ -48,6 +53,17 @@ export default function App() {
 
   const goHome = useCallback(() => setPage("home"), []);
 
+  // Where ← goes back to when a document was opened from the sign-in screen
+  // rather than from inside the diary.
+  const [legalReturn, setLegalReturn] = useState<Page>("home");
+  const openLegal = useCallback(
+    (doc: Page) => {
+      setLegalReturn(page);
+      setPage(doc);
+    },
+    [page]
+  );
+
   const lockNow = useCallback(async () => {
     // Await the flush so a change made moments before locking is not lost.
     await lock();
@@ -55,12 +71,27 @@ export default function App() {
     setLocked(true);
   }, []);
 
+  if (isLegalPage(page)) {
+    const doc = page === "privacy" ? privacy : page === "terms" ? terms : cookies;
+    return (
+      <div className="app">
+        <LegalPage
+          doc={doc}
+          lang={lang}
+          onToggleLang={toggleLang}
+          onBack={() => setPage(legalReturn)}
+        />
+      </div>
+    );
+  }
+
   if (isBackendConfigured && !signedIn) {
     return (
       <div className="app">
         <AccountGate
           lang={lang}
           onToggleLang={toggleLang}
+          onOpenLegal={openLegal}
           onSignedIn={() => {
             const counts = deviceDataCounts();
             const hasLocal =
@@ -128,6 +159,7 @@ export default function App() {
 
         <footer className="footer">
           <p>{t(lang, "footerNote")}</p>
+          <LegalLinks lang={lang} onOpen={openLegal} />
         </footer>
       </div>
     </div>

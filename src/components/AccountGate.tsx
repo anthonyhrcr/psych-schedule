@@ -1,5 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Lang } from "../lib/schedule";
+import { Page } from "../lib/navigation";
+import { LegalLinks } from "./LegalLinks";
 import {
   signIn,
   setUpKeys,
@@ -15,6 +17,7 @@ type Props = {
   lang: Lang;
   onToggleLang: () => void;
   onSignedIn: () => void;
+  onOpenLegal: (page: Page) => void;
 };
 
 type Stage =
@@ -41,7 +44,7 @@ type Stage =
  * new password, and why the warning appears before the email is sent rather
  * than after, when it would be too late to be useful.
  */
-export function AccountGate({ lang, onToggleLang, onSignedIn }: Props) {
+export function AccountGate({ lang, onToggleLang, onSignedIn, onOpenLegal }: Props) {
   const [stage, setStage] = useState<Stage>({ name: "sign-in" });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -380,6 +383,8 @@ export function AccountGate({ lang, onToggleLang, onSignedIn }: Props) {
         )}
 
         {error && <p className="notice-error">{error}</p>}
+
+        <LegalLinks lang={lang} onOpen={onOpenLegal} />
       </div>
     </div>
   );

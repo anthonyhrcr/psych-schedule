@@ -1641,6 +1641,61 @@ select {
   align-self: flex-start;
 }
 
+/* Long-form reading, so the measure is narrower than the app's and the
+   rhythm is looser than a form's. */
+.link-btn {
+  display: inline-block;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  color: var(--ink-deep);
+}
+
+.legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.legal-doc {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding-bottom: 32px;
+}
+
+.legal-updated {
+  margin: 0 0 24px;
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+.legal-intro {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.legal-section {
+  margin-top: 28px;
+}
+
+.legal-paragraph {
+  font-size: 14px;
+  line-height: 1.75;
+  white-space: pre-line;
+  max-width: 68ch;
+}
+
 /* A quiet way out of the form: present enough to find when a password is
    lost, subdued enough not to compete with signing in. */
 .link-btn {
