@@ -39,8 +39,8 @@ export const cookies: LegalDocPair = {
       {
         heading: "4. Requisições a terceiros",
         body: [
-          "A fonte tipográfica do site é carregada do Google Fonts. Essa requisição envia o seu endereço IP ao Google, mesmo antes de qualquer login, ainda que não grave cookies no seu navegador.",
-          "Fora isso, o site se comunica apenas com a nossa infraestrutura de hospedagem (Vercel) e de banco de dados (Supabase).",
+          "Não há nenhuma. A fonte tipográfica é servida pelo próprio site — antes ela vinha do Google Fonts, o que enviava o seu endereço IP ao Google a cada visita, e isso foi removido.",
+          "O site se comunica apenas com a nossa infraestrutura de hospedagem (Vercel) e de banco de dados (Supabase).",
         ],
       },
       {
@@ -81,8 +81,8 @@ export const cookies: LegalDocPair = {
       {
         heading: "4. Third-party requests",
         body: [
-          "The site's typeface is loaded from Google Fonts. That request sends your IP address to Google, even before any sign-in, although it sets no cookie in your browser.",
-          "Otherwise the site communicates only with our hosting (Vercel) and database (Supabase) infrastructure.",
+          "There are none. The typeface is served by the site itself — it used to come from Google Fonts, which sent your IP address to Google on every visit, and that has been removed.",
+          "The site communicates only with our hosting (Vercel) and database (Supabase) infrastructure.",
         ],
       },
       {
