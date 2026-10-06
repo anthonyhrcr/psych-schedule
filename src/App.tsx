@@ -19,6 +19,10 @@ import { LegalLinks } from "./components/LegalLinks";
 import { privacy } from "./legal/privacy";
 import { terms } from "./legal/terms";
 import { cookies } from "./legal/cookies";
+import { refunds } from "./legal/refunds";
+import { LEGAL_VERSION } from "./legal/version";
+import { ConsentGate } from "./components/ConsentGate";
+import { hasAccepted } from "./lib/consent";
 import { HomePage } from "./pages/HomePage";
 import { AgendaPage } from "./pages/AgendaPage";
 import { PatientsPage } from "./pages/PatientsPage";
@@ -35,6 +39,8 @@ export default function App() {
   // With a backend configured the app is account-based; without one it stays
   // exactly as it was, working on this device alone.
   const [signedIn, setSignedIn] = useState(() => isSignedIn());
+  // Asked once per device, after the diary is reachable but before it opens.
+  const [accepted, setAccepted] = useState(() => hasAccepted(LEGAL_VERSION));
   // Records still sitting on this device when an account is opened. Captured
   // at sign-in so the offer can be made before the diary looks empty.
   const [pendingUpload, setPendingUpload] = useState<{
@@ -72,7 +78,14 @@ export default function App() {
   }, []);
 
   if (isLegalPage(page)) {
-    const doc = page === "privacy" ? privacy : page === "terms" ? terms : cookies;
+    const doc =
+      page === "privacy"
+        ? privacy
+        : page === "terms"
+          ? terms
+          : page === "cookies"
+            ? cookies
+            : refunds;
     return (
       <div className="app">
         <LegalPage
@@ -123,6 +136,19 @@ export default function App() {
           lang={lang}
           onToggleLang={toggleLang}
           onUnlocked={() => setLocked(false)}
+        />
+      </div>
+    );
+  }
+
+  if (!accepted) {
+    return (
+      <div className="app">
+        <ConsentGate
+          lang={lang}
+          onToggleLang={toggleLang}
+          onAccepted={() => setAccepted(true)}
+          onOpenLegal={openLegal}
         />
       </div>
     );

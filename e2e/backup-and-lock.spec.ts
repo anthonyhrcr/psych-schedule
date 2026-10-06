@@ -1,6 +1,12 @@
 import { test, expect } from "@playwright/test";
 import { readFile } from "node:fs/promises";
-import { freshVisit, openSection, goBack, book } from "./helpers";
+import {
+  freshVisit,
+  openSection,
+  goBack,
+  book,
+  acceptLegalTerms,
+} from "./helpers";
 
 /**
  * The two flows where a mistake costs the user their records rather than
@@ -33,9 +39,12 @@ test("downloads a backup and restores it onto an emptied device", async ({ page 
   expect(bundle.format).toBe("psych-schedule-backup");
   expect(Object.keys(bundle.days)).toHaveLength(2);
 
-  // Wipe the device entirely, as clearing site data would.
+  // Wipe the device entirely, as clearing site data would. That also removes
+  // the record of accepting the terms, so they are asked for again — exactly
+  // what a person clearing their browser would meet.
   await page.evaluate(() => localStorage.clear());
   await page.reload();
+  await acceptLegalTerms(page);
   await openSection(page, "history");
   await expect(page.locator(".history-session")).toHaveCount(0);
 

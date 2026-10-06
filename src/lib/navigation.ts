@@ -8,9 +8,10 @@ export type Page =
   // platform has to be able to read these before handing it anything.
   | "privacy"
   | "terms"
-  | "cookies";
+  | "cookies"
+  | "refunds";
 
-export const LEGAL_PAGES: Page[] = ["privacy", "terms", "cookies"];
+export const LEGAL_PAGES: Page[] = ["privacy", "terms", "cookies", "refunds"];
 
 export function isLegalPage(page: Page): boolean {
   return LEGAL_PAGES.includes(page);

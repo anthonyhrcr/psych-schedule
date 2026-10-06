@@ -162,6 +162,16 @@ const en: Dict = {
   navTerms: "Terms",
   navCookies: "Cookies",
   lastUpdated: "Last updated:",
+  navRefunds: "Refunds",
+  consentTitle: "Before you start",
+  consentIntro:
+    "Two things to know, and three documents to read. It takes a minute and you are only asked once.",
+  consentControllerNote:
+    "The records you keep here are your patients' health data, and you are responsible for them: for telling your patients, for keeping professional confidentiality, and for the retention periods your Council sets. This platform is the tool, not the controller.",
+  consentEncryptionNote:
+    "Your records are encrypted with a key we do not hold. If you lose both your password and your recovery key, nobody can read them again \u2014 not support, not a court order, not us.",
+  consentCheckbox: "I have read and accept the Terms, the Privacy Policy and the Refund Policy.",
+  consentAccept: "Accept and open the diary",
   signOut: "Sign out",
   accountTitle: "Account",
   signedInAs: "Signed in as",
@@ -342,6 +352,17 @@ const pt: Dict = {
   navTerms: "Termos",
   navCookies: "Cookies",
   lastUpdated: "\u00daltima atualiza\u00e7\u00e3o:",
+  navRefunds: "Reembolso",
+  consentTitle: "Antes de come\u00e7ar",
+  consentIntro:
+    "Duas coisas para saber e tr\u00eas documentos para ler. Leva um minuto, e isto \u00e9 perguntado uma vez s\u00f3.",
+  consentControllerNote:
+    "Os registros guardados aqui s\u00e3o dados de sa\u00fade dos seus pacientes, e a responsabilidade por eles \u00e9 sua: informar os pacientes, manter o sigilo profissional e observar os prazos de guarda definidos pelo Conselho. Esta plataforma \u00e9 a ferramenta, n\u00e3o a controladora.",
+  consentEncryptionNote:
+    "Seus registros s\u00e3o criptografados com uma chave que n\u00e3o temos. Se voc\u00ea perder a senha e a chave de recupera\u00e7\u00e3o, ningu\u00e9m mais conseguir\u00e1 l\u00ea-los \u2014 nem o suporte, nem uma ordem judicial, nem n\u00f3s.",
+  consentCheckbox:
+    "Li e aceito os Termos de Uso, a Pol\u00edtica de Privacidade e a Pol\u00edtica de Reembolso.",
+  consentAccept: "Aceitar e abrir o di\u00e1rio",
   signOut: "Sair",
   accountTitle: "Conta",
   signedInAs: "Conectado como",

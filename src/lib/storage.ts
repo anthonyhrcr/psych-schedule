@@ -33,6 +33,7 @@ import {
   randomBytes,
   saltOf,
 } from "./vault";
+import { CONSENT_KEY } from "./consent";
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -160,7 +161,7 @@ function collectPlaintext(): VaultData {
 
 function clearPlaintextKeys(): void {
   for (const key of safeKeys()) {
-    if (key === LANG_STORAGE_KEY || key === VAULT_KEY) continue;
+    if (key === LANG_STORAGE_KEY || key === VAULT_KEY || key === CONSENT_KEY) continue;
     if (key.startsWith("psych-schedule:")) {
       try {
         localStorage.removeItem(key);

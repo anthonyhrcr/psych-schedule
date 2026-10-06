@@ -13,11 +13,23 @@ export const SECTIONS = {
   history: 3,
 } as const;
 
+/**
+ * Tick the box a first-time visitor now meets before the diary opens. Safe to
+ * call when it is not there, so a test that has already accepted can reuse it.
+ */
+export async function acceptLegalTerms(page: Page) {
+  const gate = page.locator(".consent-gate");
+  if (!(await gate.isVisible())) return;
+  await gate.locator(".checkbox-row input").check();
+  await gate.locator(".primary-btn").click();
+}
+
 /** Start from a clean browser, as a first-time visitor would. */
 export async function freshVisit(page: Page) {
   await page.goto("/");
   await page.evaluate(() => localStorage.clear());
   await page.reload();
+  await acceptLegalTerms(page);
   await expect(page.locator(".home-index")).toBeVisible();
 }
 

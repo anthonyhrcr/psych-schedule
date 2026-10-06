@@ -20,6 +20,9 @@ export function LegalLinks({ lang, onOpen }: Props) {
       <button type="button" className="link-btn" onClick={() => onOpen("cookies")}>
         {t(lang, "navCookies")}
       </button>
+      <button type="button" className="link-btn" onClick={() => onOpen("refunds")}>
+        {t(lang, "navRefunds")}
+      </button>
     </p>
   );
 }

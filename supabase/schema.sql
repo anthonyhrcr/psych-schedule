@@ -77,6 +77,20 @@ create table if not exists settings (
   updated_at timestamptz not null default now()
 );
 
+-- ---------------------------------------------------------------------------
+-- Acceptance of the terms, privacy policy and refund policy
+-- ---------------------------------------------------------------------------
+-- Not encrypted, and deliberately so: this exists to show that a given user
+-- accepted a given version of the documents on a given date. Evidence nobody
+-- can read is not evidence. It holds no clinical content.
+
+create table if not exists consents (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  document_version text not null,
+  accepted_at timestamptz not null default now(),
+  primary key (user_id, document_version)
+);
+
 create index if not exists notes_by_patient on notes (user_id, patient_id);
 create index if not exists days_by_date on days (user_id, date);
 
@@ -92,6 +106,7 @@ alter table days enable row level security;
 alter table patients enable row level security;
 alter table notes enable row level security;
 alter table settings enable row level security;
+alter table consents enable row level security;
 
 do $$
 declare
@@ -114,6 +129,13 @@ begin
       'create policy own_rows_delete on %I for delete using (auth.uid() = user_id)', t);
   end loop;
 end $$;
+
+-- Consents are an audit trail, so they are insert-and-read only. A record
+-- the user can quietly delete or rewrite would not be worth keeping.
+drop policy if exists own_consents_select on consents;
+drop policy if exists own_consents_insert on consents;
+create policy own_consents_select on consents for select using (auth.uid() = user_id);
+create policy own_consents_insert on consents for insert with check (auth.uid() = user_id);
 
 -- ---------------------------------------------------------------------------
 -- Keep updated_at honest, so sync can resolve conflicts by recency.
