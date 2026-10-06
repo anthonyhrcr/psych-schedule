@@ -6,10 +6,13 @@
     <meta name="robots" content="noindex, nofollow" />
     <title>Página não encontrada — Diário da Prática</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;800&display=swap"
-      rel="stylesheet"
-    />
+    <!--
+      No webfont here on purpose. This page is copied verbatim into the build,
+      so it cannot reach the hashed font files the app uses, and loading one
+      from Google would send a visitor's IP there for the sake of a 404. The
+      stack below uses JetBrains Mono when the visitor happens to have it and
+      the system monospace otherwise.
+    -->
     <style>
       :root {
         --desk: #3a1f2c;

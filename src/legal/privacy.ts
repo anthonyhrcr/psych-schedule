@@ -44,7 +44,7 @@ export const privacy: LegalDocPair = {
         body: [
           `• Supabase — banco de dados e autenticação. Armazena os dados cifrados e os metadados do item 3. Região do banco: ${OPERATOR.databaseRegion}. Caso a região fique fora do Brasil, há transferência internacional, com base no art. 33 da LGPD.`,
           "• Vercel — hospedagem do site. Recebe requisições de acesso, com IP e dados do navegador. Nenhum registro clínico passa por ela em texto legível.",
-          "• Google Fonts — a fonte tipográfica é carregada dos servidores do Google, o que envia o seu endereço IP a eles sempre que a página abre, inclusive antes de qualquer login.",
+          "A fonte tipográfica do site é servida pelo próprio site. Nenhum outro terceiro recebe requisição sua ao abrir a página.",
           "Não há publicidade, não há análise de comportamento, não há venda ou compartilhamento de dados com terceiros para qualquer outra finalidade.",
         ],
       },
@@ -130,7 +130,7 @@ export const privacy: LegalDocPair = {
         body: [
           `• Supabase — database and authentication. Stores the ciphertext and the metadata in section 3. Database region: ${OPERATOR.databaseRegion}. If that region is outside Brazil, an international transfer occurs under article 33 of the LGPD.`,
           "• Vercel — site hosting. Receives requests, including IP and browser details. No clinical record passes through it in readable form.",
-          "• Google Fonts — the typeface is loaded from Google's servers, which sends your IP address to Google whenever the page opens, including before any sign-in.",
+          "The site's typeface is served by the site itself. No other third party receives a request from you when the page opens.",
           "There is no advertising, no behavioural analytics, and no sale or sharing of data with third parties for any other purpose.",
         ],
       },
