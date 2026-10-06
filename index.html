@@ -6,7 +6,7 @@
     <title>Diário da Prática</title>
     <meta
       name="description"
-      content="Agenda, pacientes e anotações de sessão — guardados apenas neste navegador."
+      content="Agenda, pacientes e anotações de sessão para uma prática de psicologia."
     />
     <!-- A private tool under a professional domain: reachable by link, but
          deliberately kept out of search results. -->
@@ -15,12 +15,26 @@
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./favicon.svg" />
 
+    <!-- Open Graph. Search engines stay blocked in robots.txt; link-preview
+         crawlers are allowed through so a shared link renders a card. Nothing
+         here describes data: the app shows nothing at all without a sign-in. -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Diário da Prática" />
+    <meta property="og:site_name" content="Agenda Psi" />
+    <meta property="og:url" content="https://datapsi.com.br/" />
+    <meta property="og:title" content="Agenda Psi — agenda e prontuário" />
     <meta
       property="og:description"
-      content="Agenda, pacientes e anotações de sessão — guardados apenas neste navegador."
+      content="Agenda, pacientes e anotações de sessão para uma prática de psicologia. Local-first, com sincronização opcional ponta a ponta: o servidor nunca vê o conteúdo."
     />
+    <meta property="og:image" content="https://datapsi.com.br/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Agenda Psi — agenda e prontuário para uma prática de psicologia"
+    />
+    <meta property="og:locale" content="pt_BR" />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

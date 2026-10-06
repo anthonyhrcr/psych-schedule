@@ -1,3 +1,22 @@
 # A private practice tool. Reachable by link, kept out of search results.
+#
+# Link-preview crawlers are allowed so that a shared link renders a card
+# instead of a bare URL. They only ever see the Open Graph tags in index.html,
+# which describe the app and nothing else: the application shows no data at all
+# without authentication.
+#
+# Search engines remain disallowed, so the original intent still holds.
+
+User-agent: LinkedInBot
+User-agent: Twitterbot
+User-agent: facebookexternalhit
+User-agent: Slackbot-LinkExpanding
+User-agent: Slackbot
+User-agent: WhatsApp
+User-agent: Discordbot
+User-agent: TelegramBot
+User-agent: redditbot
+Allow: /
+
 User-agent: *
 Disallow: /
