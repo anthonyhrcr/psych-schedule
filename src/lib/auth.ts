@@ -280,6 +280,58 @@ export async function completePasswordReset(
   return { status: "ok" };
 }
 
+export type PasswordChangeOutcome =
+  | { status: "ok" }
+  | { status: "bad-password" }
+  | { status: "no-session" }
+  | { status: "failed"; message: string };
+
+/**
+ * Change the password from inside the diary, without the recovery key.
+ *
+ * The current password proves the account is yours and unwraps the master
+ * key; the new one gets a fresh wrap of the same key. The records are never
+ * re-encrypted and the recovery wrap is left alone, so the recovery key
+ * issued at signup keeps working.
+ *
+ * As in a reset, nothing moves until the old password has been checked: the
+ * other order would change the sign-in password and leave the wrap behind it,
+ * locking the account out of its own records.
+ */
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string
+): Promise<PasswordChangeOutcome> {
+  const supabase = getSupabase();
+  if (!supabase) return { status: "failed", message: "no-backend" };
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) return { status: "no-session" };
+
+  const { data: row } = await supabase
+    .from("account_keys")
+    .select("*")
+    .eq("user_id", auth.user.id)
+    .maybeSingle();
+  if (!row) return { status: "failed", message: "no-keys" };
+
+  const keys = rowToWrapped(row as AccountKeysRow);
+  const master = await unlockWithPassword(keys, currentPassword);
+  if (!master) return { status: "bad-password" };
+
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) return { status: "failed", message: error.message };
+
+  const rewrapped = await rewrapWithPassword(keys, master, newPassword);
+  const { error: keyError } = await supabase
+    .from("account_keys")
+    .upsert(wrappedToRow(auth.user.id, rewrapped), { onConflict: "user_id" });
+  if (keyError) return { status: "failed", message: keyError.message };
+
+  // The master key in memory is the same one, so the open session carries on
+  // untouched — no re-pull, and no reason to make the user sign in again.
+  return { status: "ok" };
+}
+
 /** Restore a session left from a previous visit, if the key can be unwrapped. */
 export async function resumeSession(): Promise<boolean> {
   const supabase = getSupabase();
