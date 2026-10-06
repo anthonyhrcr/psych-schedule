@@ -67,9 +67,20 @@ export function generateRecoveryKey(): string {
   return (out.match(/.{1,5}/g) ?? []).join("-");
 }
 
-/** Accept a recovery key however the user typed it: case, spaces, dashes. */
+/**
+ * Accept a recovery key however the user typed it: case, spaces, dashes.
+ *
+ * The alphabet leaves out I, L, O and U so they cannot be confused on paper.
+ * That only helps if the confusion is undone on the way back in — someone
+ * reading a zero and typing the letter O would otherwise be told their key is
+ * wrong, with no way to tell a typo from a lost key.
+ */
 export function normaliseRecoveryKey(input: string): string {
-  return input.toUpperCase().replace(/[^0-9A-Z]/g, "");
+  return input
+    .toUpperCase()
+    .replace(/O/g, "0")
+    .replace(/[IL]/g, "1")
+    .replace(/[^0-9A-Z]/g, "");
 }
 
 async function deriveWrappingKey(secret: string, salt: Uint8Array): Promise<CryptoKey> {
