@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { Lang } from "../lib/schedule";
 import {
   signIn,
@@ -9,6 +9,7 @@ import {
   isPasswordRecoveryLink,
   onPasswordRecovery,
 } from "../lib/auth";
+import { buildRecoveryFile, parseRecoveryFile, recoveryFileName } from "../lib/recovery";
 import { t } from "../i18n";
 
 type Props = {
@@ -51,6 +52,58 @@ export function AccountGate({ lang, onToggleLang, onSignedIn }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [acknowledged, setAcknowledged] = useState(false);
+  const [fileNotice, setFileNotice] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const downloadRecoveryFile = (recoveryKey: string) => {
+    const blob = new Blob([buildRecoveryFile(recoveryKey)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = recoveryFileName();
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  // Reading the key out of the file the app handed over at signup, rather
+  // than asking for forty characters to be typed back from paper.
+  const loadRecoveryFile = async (file: File) => {
+    const key = parseRecoveryFile(await file.text());
+    if (!key) {
+      setFileNotice(null);
+      setError(t(lang, "recoveryFileInvalid"));
+      return;
+    }
+    setError(null);
+    setRecoveryInput(key);
+    setFileNotice(t(lang, "recoveryFileLoaded"));
+  };
+
+  const recoveryFilePicker = (
+    <>
+      <button
+        type="button"
+        className="nav-btn"
+        onClick={() => fileRef.current?.click()}
+      >
+        {t(lang, "useRecoveryFile")}
+      </button>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="application/json,.json"
+        hidden
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) void loadRecoveryFile(file);
+          e.target.value = "";
+        }}
+      />
+      {fileNotice && <p className="notice-ok">{fileNotice}</p>}
+    </>
+  );
 
   // Arriving from a reset email: the link carries a session, not a key.
   useEffect(() => {
@@ -297,6 +350,7 @@ export function AccountGate({ lang, onToggleLang, onSignedIn }: Props) {
                 {busy ? t(lang, "resetting") : t(lang, "resetBtn")}
               </button>
             </form>
+            {recoveryFilePicker}
           </>
         )}
 
@@ -324,12 +378,20 @@ export function AccountGate({ lang, onToggleLang, onSignedIn }: Props) {
             <div className="backup-actions">
               <button
                 type="button"
+                className="primary-btn"
+                onClick={() => downloadRecoveryFile(stage.recoveryKey)}
+              >
+                {t(lang, "downloadRecoveryFile")}
+              </button>
+              <button
+                type="button"
                 className="nav-btn"
                 onClick={() => void navigator.clipboard?.writeText(stage.recoveryKey)}
               >
                 {t(lang, "copyRecoveryKey")}
               </button>
             </div>
+            <p className="backup-hint">{t(lang, "recoveryFileHint")}</p>
             <p className="notice-warn">{t(lang, "recoveryShownWarning")}</p>
             <label className="checkbox-row">
               <input
@@ -376,6 +438,7 @@ export function AccountGate({ lang, onToggleLang, onSignedIn }: Props) {
                 {busy ? t(lang, "unlocking") : t(lang, "recoverBtn")}
               </button>
             </form>
+            {recoveryFilePicker}
           </>
         )}
 
