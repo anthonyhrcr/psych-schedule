@@ -1,4 +1,4 @@
--- Diário da Prática — database schema
+-- Agenda Psi — database schema
 --
 -- Run this once in the Supabase SQL editor (Dashboard → SQL Editor → New query).
 --
