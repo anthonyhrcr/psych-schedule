@@ -1,0 +1,499 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-06T21:19:56Z",
+  "title": "Design System: Agenda Psi",
+  "extensions": {
+    "colorMeta": {
+      "desk": {
+        "role": "neutral",
+        "displayName": "Deep Plum Desk",
+        "canonical": "#3a1f2c",
+        "tonalRamp": [
+          "#321b26",
+          "#582f43",
+          "#7e435f",
+          "#a4587c",
+          "#b97c9a",
+          "#cea2b7",
+          "#e2c8d5",
+          "#f6eef2"
+        ]
+      },
+      "desk-deep": {
+        "role": "neutral",
+        "displayName": "Plum Shadow",
+        "canonical": "#2c1620",
+        "tonalRamp": [
+          "#331925",
+          "#5a2d41",
+          "#81405e",
+          "#a8547a",
+          "#bc7998",
+          "#d0a0b6",
+          "#e3c7d4",
+          "#f6eef2"
+        ]
+      },
+      "page": {
+        "role": "neutral",
+        "displayName": "Diary Cream",
+        "canonical": "#f5ecd8",
+        "tonalRamp": [
+          "#3d2f10",
+          "#6b531c",
+          "#9a7627",
+          "#c89a33",
+          "#d6b160",
+          "#e2c88e",
+          "#eedfbc",
+          "#faf5eb"
+        ]
+      },
+      "page-shade": {
+        "role": "neutral",
+        "displayName": "Cream Shade",
+        "canonical": "#eadfc4",
+        "tonalRamp": [
+          "#382e14",
+          "#635123",
+          "#8e7433",
+          "#b99742",
+          "#caaf6b",
+          "#dac696",
+          "#e9ddc1",
+          "#f8f5ec"
+        ]
+      },
+      "page-shade-deep": {
+        "role": "neutral",
+        "displayName": "Cream Shade Deep",
+        "canonical": "#ded1ae",
+        "tonalRamp": [
+          "#362e16",
+          "#605027",
+          "#897338",
+          "#b39649",
+          "#c5ae71",
+          "#d6c69a",
+          "#e7ddc3",
+          "#f8f5ed"
+        ]
+      },
+      "rule": {
+        "role": "secondary",
+        "displayName": "Brass Rule",
+        "canonical": "#c7a96b",
+        "tonalRamp": [
+          "#372c15",
+          "#624e25",
+          "#8c7035",
+          "#b69145",
+          "#c8ab6e",
+          "#d8c398",
+          "#e8dcc2",
+          "#f8f4ec"
+        ]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "Consulting Teal",
+        "canonical": "#1e5c55",
+        "tonalRamp": [
+          "#133a35",
+          "#21665e",
+          "#2f9287",
+          "#3ebeaf",
+          "#68cec2",
+          "#94dcd4",
+          "#c0eae6",
+          "#ecf9f7"
+        ]
+      },
+      "ink-deep": {
+        "role": "primary",
+        "displayName": "Deep Ink",
+        "canonical": "#123e39",
+        "tonalRamp": [
+          "#113b37",
+          "#1e6860",
+          "#2b968a",
+          "#39c3b3",
+          "#64d2c5",
+          "#91dfd6",
+          "#beece7",
+          "#ebf9f8"
+        ]
+      },
+      "ink-wash": {
+        "role": "primary",
+        "displayName": "Ink Wash",
+        "canonical": "#dceae6",
+        "tonalRamp": [
+          "#1d302a",
+          "#33544b",
+          "#48796b",
+          "#5e9d8b",
+          "#82b4a6",
+          "#a6cac0",
+          "#cbe0da",
+          "#eff5f4"
+        ]
+      },
+      "brass": {
+        "role": "secondary",
+        "displayName": "Brass",
+        "canonical": "#a9752f",
+        "tonalRamp": [
+          "#3c2911",
+          "#69491d",
+          "#97692a",
+          "#c58837",
+          "#d3a362",
+          "#e0be90",
+          "#edd9bd",
+          "#f9f3eb"
+        ]
+      },
+      "brass-wash": {
+        "role": "secondary",
+        "displayName": "Brass Wash",
+        "canonical": "#f0e3c8",
+        "tonalRamp": [
+          "#3c2e10",
+          "#6a511d",
+          "#987429",
+          "#c59736",
+          "#d4af62",
+          "#e1c68f",
+          "#edddbd",
+          "#faf5eb"
+        ]
+      },
+      "oxblood": {
+        "role": "tertiary",
+        "displayName": "Oxblood",
+        "canonical": "#8c3b3f",
+        "tonalRamp": [
+          "#361718",
+          "#5f282b",
+          "#88393d",
+          "#b14b50",
+          "#c47276",
+          "#d59b9e",
+          "#e6c4c6",
+          "#f7edee"
+        ]
+      },
+      "oxblood-wash": {
+        "role": "tertiary",
+        "displayName": "Oxblood Wash",
+        "canonical": "#f1dedd",
+        "tonalRamp": [
+          "#361816",
+          "#5f2a27",
+          "#893c38",
+          "#b24f49",
+          "#c57571",
+          "#d69d9a",
+          "#e7c5c4",
+          "#f8eded"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Pencil Brown",
+        "canonical": "#2a2018",
+        "tonalRamp": [
+          "#31251c",
+          "#564131",
+          "#7b5e46",
+          "#a07a5b",
+          "#b6987f",
+          "#cbb6a5",
+          "#e1d4ca",
+          "#f6f2ef"
+        ]
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "Muted Pencil",
+        "canonical": "#6b5d48",
+        "tonalRamp": [
+          "#2e281f",
+          "#514636",
+          "#73644e",
+          "#968365",
+          "#ae9f87",
+          "#c6bbaa",
+          "#ddd7cd",
+          "#f5f3f0"
+        ]
+      },
+      "text-soft": {
+        "role": "neutral",
+        "displayName": "Soft Pencil",
+        "canonical": "#9c8d72",
+        "tonalRamp": [
+          "#2d2820",
+          "#4f4738",
+          "#716550",
+          "#948468",
+          "#aca089",
+          "#c4bcac",
+          "#dcd7ce",
+          "#f4f3f0"
+        ]
+      },
+      "error": {
+        "role": "tertiary",
+        "displayName": "Correction Red",
+        "canonical": "#a6453b",
+        "tonalRamp": [
+          "#381714",
+          "#632923",
+          "#8e3b33",
+          "#b94d42",
+          "#ca746b",
+          "#da9c96",
+          "#e9c5c1",
+          "#f8edec"
+        ]
+      },
+      "rule-soft": {
+        "role": "secondary",
+        "displayName": "Brass Rule, Soft",
+        "canonical": "rgba(199, 169, 107, 0.35)",
+        "tonalRamp": [
+          "#372c15",
+          "#624e25",
+          "#8c7035",
+          "#b69145",
+          "#c8ab6e",
+          "#d8c398",
+          "#e8dcc2",
+          "#f8f4ec"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Product name and page titles; tight tracking keeps a monospace face from reading as code."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings inside a page."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "The patient name in a booked hour — the most-read text in the product."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose and legal documents at a 68ch measure."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field captions and column headers; the only letter-spaced role."
+      }
+    },
+    "shadows": [
+      {
+        "name": "page-lift",
+        "value": "0 18px 40px rgba(20,12,10,0.35), 0 0 0 1px rgba(0,0,0,0.15)",
+        "purpose": "The only elevation in the system. The page and the lock card; nothing inside them."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state",
+        "value": "0.15s",
+        "purpose": "Default for background, colour and border state changes."
+      },
+      {
+        "name": "bed",
+        "value": "0.2s ease",
+        "purpose": "Contents-row hover: the bed fills and the content steps right."
+      },
+      {
+        "name": "press",
+        "value": "0.05s",
+        "purpose": "Button press feedback."
+      },
+      {
+        "name": "page-settle",
+        "value": "0.5s ease both — opacity 0→1, translateY(10px)→0",
+        "purpose": "The page settling onto the desk on first paint. Cards use 0.4s."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "lg",
+        "value": "760px"
+      },
+      {
+        "name": "md",
+        "value": "720px"
+      },
+      {
+        "name": "sm",
+        "value": "480px"
+      },
+      {
+        "name": "touch",
+        "value": "(hover: none)"
+      },
+      {
+        "name": "reduced-motion",
+        "value": "(prefers-reduced-motion: reduce)"
+      },
+      {
+        "name": "reduced-transparency",
+        "value": "(prefers-reduced-transparency: reduce)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single action on a view. Ink fill, barely rounded, pressed to deep ink on hover.",
+      "html": "<button class=\"ds-btn-primary\">Abrir o diário</button>",
+      "css": ".ds-btn-primary { background: var(--ink, #1e5c55); color: var(--page, #f5ecd8); border: 1px solid var(--ink, #1e5c55); border-radius: 3px; padding: 10px 20px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 14px; font-weight: 600; letter-spacing: 0.02em; cursor: pointer; transition: background 0.15s, opacity 0.15s; } .ds-btn-primary:hover { background: var(--ink-deep, #123e39); border-color: var(--ink-deep, #123e39); } .ds-btn-primary:focus-visible { outline: 2px solid var(--ink, #1e5c55); outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action. A brass hairline that fills with ink wash on hover.",
+      "html": "<button class=\"ds-btn-ghost\">Baixar backup</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: var(--text, #2a2018); border: 1px solid var(--rule, #c7a96b); border-radius: 3px; padding: 9px 15px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s, border-color 0.15s; } .ds-btn-ghost:hover { background: var(--ink-wash, #dceae6); border-color: var(--ink, #1e5c55); color: var(--ink-deep, #123e39); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--ink, #1e5c55); outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Link",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "The quiet escape from a form — forgotten password, legal documents.",
+      "html": "<button class=\"ds-link\">Esqueceu sua senha?</button>",
+      "css": ".ds-link { background: none; border: 0; padding: 0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 13px; color: var(--ink, #1e5c55); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; } .ds-link:hover { color: var(--ink-deep, #123e39); }"
+    },
+    {
+      "name": "Underline Field",
+      "kind": "input",
+      "refersTo": "input-underline",
+      "description": "No box. A ruled line you write on; it thickens to ink on focus.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">E-mail</span><input class=\"ds-input\" type=\"email\" value=\"ana@exemplo.br\" /></label>",
+      "css": ".ds-field { display: block; } .ds-field-label { display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted, #6b5d48); margin-bottom: 8px; } .ds-input { width: 100%; border: none; border-bottom: 1px solid var(--rule, #c7a96b); border-radius: 0; padding: 8px 2px; background: transparent; color: var(--text, #2a2018); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 15px; } .ds-input:focus { outline: none; border-bottom: 2px solid var(--ink, #1e5c55); }"
+    },
+    {
+      "name": "Page Surface",
+      "kind": "card",
+      "refersTo": "card-page",
+      "description": "The one lifted surface: a cream page on the plum desk, with its binding gutter.",
+      "html": "<div class=\"ds-page\"><h2 class=\"ds-page-title\">Histórico</h2><p class=\"ds-page-body\">Todas as sessões já agendadas, agrupadas por data.</p></div>",
+      "css": ".ds-page { position: relative; background: var(--page, #f5ecd8); border-radius: 6px; box-shadow: 0 18px 40px rgba(20,12,10,0.35), 0 0 0 1px rgba(0,0,0,0.15); padding: 32px 32px 28px 44px; } .ds-page::before { content: ''; position: absolute; top: 0; bottom: 0; left: 18px; border-left: 1px solid rgba(199,169,107,0.35); box-shadow: 6px 0 0 -5px rgba(199,169,107,0.35); } .ds-page-title { margin: 0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 28px; font-weight: 800; letter-spacing: -0.025em; color: var(--text, #2a2018); } .ds-page-body { margin: 6px 0 0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 15px; font-style: italic; color: var(--text-muted, #6b5d48); }"
+    },
+    {
+      "name": "Contents Row",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Navigation as a contents list. The row bed fills and the content steps right on hover.",
+      "html": "<button class=\"ds-row\"><span class=\"ds-row-mark\"></span><span class=\"ds-row-label\">Agenda</span><span class=\"ds-row-meta\">→</span></button>",
+      "css": ".ds-row { display: grid; grid-template-columns: 5px 1fr auto; align-items: center; gap: 20px; width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(199,169,107,0.35); padding: 22px 8px 22px 0; text-align: left; font-family: 'JetBrains Mono', ui-monospace, monospace; color: var(--text, #2a2018); cursor: pointer; transition: padding-left 0.2s ease, background 0.2s ease; } .ds-row:hover { padding-left: 10px; background: var(--page-shade, #eadfc4); } .ds-row-mark { height: 100%; } .ds-row-label { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; } .ds-row-meta { color: var(--text-soft, #9c8d72); }"
+    },
+    {
+      "name": "Schedule Cell — Free",
+      "kind": "custom",
+      "refersTo": "slot-free",
+      "description": "An unbooked hour. The plus sits at low opacity on touch and brightens on hover.",
+      "html": "<button class=\"ds-slot ds-slot-free\"><span class=\"ds-slot-add\">+</span></button>",
+      "css": ".ds-slot { min-height: 56px; width: 160px; border: none; border-left: 1px solid rgba(199,169,107,0.35); background: transparent; padding: 6px 8px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', ui-monospace, monospace; cursor: pointer; transition: background 0.15s, color 0.15s; } .ds-slot-free { color: var(--text-soft, #9c8d72); } .ds-slot-add { opacity: 0.4; font-size: 12px; } .ds-slot-free:hover .ds-slot-add { opacity: 1; color: var(--ink, #1e5c55); } .ds-slot-free:focus-visible { outline: 2px solid var(--ink, #1e5c55); outline-offset: -2px; }"
+    },
+    {
+      "name": "Schedule Cell — Booked",
+      "kind": "custom",
+      "refersTo": "slot-booked",
+      "description": "The most-read text in the product: a name written on a ruled, washed line.",
+      "html": "<button class=\"ds-slot ds-slot-booked\">Ana Beatriz</button>",
+      "css": ".ds-slot-booked { min-height: 56px; width: 160px; border: none; border-left: 1px solid rgba(199,169,107,0.35); background: var(--ink-wash, #dceae6); color: var(--ink-deep, #123e39); font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500; font-size: 14px; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 6px 8px 6px 10px; cursor: pointer; transition: background 0.15s, color 0.15s; } .ds-slot-booked:focus-visible { outline: 2px solid var(--ink, #1e5c55); outline-offset: -2px; }"
+    },
+    {
+      "name": "Margin-Marked Notice",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "The system's annotation mark: a 3px left rule, ink for neutral, brass for warning, red for failure.",
+      "html": "<div class=\"ds-notice ds-notice-warn\">Sua chave de recuperação é a única forma de voltar.</div><div class=\"ds-notice ds-notice-error\">Essa não é sua senha atual.</div>",
+      "css": ".ds-notice { margin: 12px 0 0; padding: 8px 12px; border-radius: 3px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 13px; line-height: 1.5; max-width: 62ch; } .ds-notice-warn { background: var(--brass-wash, #f0e3c8); border-left: 3px solid var(--brass, #a9752f); color: var(--text, #2a2018); } .ds-notice-error { background: var(--oxblood-wash, #f1dedd); border-left: 3px solid var(--error, #a6453b); color: var(--text, #2a2018); margin-top: 8px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Analyst's Desk",
+    "overview": "The interface is a single cream page lifted onto a deep plum desk. That is not a metaphor applied after the fact — it is the vocabulary the implementation already uses: the background token is desk, the surface is page, the hairline is rule, the accent is ink, and the page arrives with a page-settle animation and a binding gutter drawn 18px from its left edge. Everything else follows from taking that seriously.\n\nThe density is clerical rather than spacious. Type is small and tightly tracked, rules are thin, and whitespace is rationed the way it is on a printed form: the page earns its margins, and the content inside sits close together. There is exactly one lift in the whole system, and it belongs to the page itself. Nothing inside the page ever floats, because paper does not stack on paper.\n\nColour is used the way a practitioner's desk uses it — a brass rule, a teal pen, a red correction. The saturated hues appear in text, lines and one primary action; everything broader is carried by washed tints of the same hues, so a booked hour reads as a filled line rather than as a coloured button.",
+    "keyCharacteristics": [
+      "One typeface, carrying all hierarchy by weight and tracking",
+      "One lift: the page floats, nothing inside it does",
+      "Lines organise, boxes do not",
+      "Warm, ruled, and legible before it is decorative",
+      "State shown by washed tint, never by shadow"
+    ],
+    "rules": [
+      {
+        "name": "The Wash, Not the Ink Rule",
+        "body": "Any area larger than a line of text is filled with a -wash tint. The saturated hues — ink, brass, oxblood — are for text, 1px rules, and the single primary button. A saturated fill across a block breaks the paper reading instantly.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Page Rule",
+        "body": "Exactly one cream surface floats on the desk at a time. Two competing pages is a layout error, not a composition choice.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Family Rule",
+        "body": "Hierarchy is carried by weight (800 → 400) and tracking (-0.025em → +0.08em), never by introducing a second typeface. A serif or a sans anywhere in this interface is a defect.",
+        "section": "typography"
+      },
+      {
+        "name": "The Legibility Floor Rule",
+        "body": "A confirmed user has low vision. Body and content text do not go below 14px, and nothing a user must read to do their job goes below 12px. Current state: the stylesheet still has seven rules at 10px and eight at 11px, and 12px is carrying the hour column, the back link and the lunch markers. Those are debt against this rule, not precedent for it.",
+        "section": "typography"
+      },
+      {
+        "name": "The Binding Gutter Rule",
+        "body": "The page keeps its wider left padding and its binding line at every breakpoint. It is the single detail that makes the surface read as a page rather than as a card.",
+        "section": "layout"
+      },
+      {
+        "name": "The One Lift Rule",
+        "body": "The page floats; nothing inside it does. A popover, a dialog or an elevated card inside the page is a violation — separate it with a rule and a tint instead.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Ruled, Not Boxed Rule",
+        "body": "A line organises; a box encloses. Reach for a rule, a tint or spacing before reaching for a border on four sides.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Margin Mark Rule",
+        "body": "The 3px left rule is this system's annotation mark — ink for neutral and positive notices, brass for warnings, error for failures. It is deliberate and systemic. Automated slop detectors flag it as an \"AI side-tab accent\"; that finding is a false positive here and should be dismissed rather than designed around.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do carry hierarchy with weight and tracking in JetBrains Mono — 800 at display with -0.025em, 600 at label with +0.08em.",
+      "Do fill broad areas with a -wash tint and keep the saturated hue for text, 1px rules and the one primary button.",
+      "Do separate with a rule, a tint, or space, in that order.",
+      "Do keep the page's binding margin and its hairline at every breakpoint.",
+      "Do hold the legibility floor: 14px for content, 12px as the absolute minimum for anything a user must read to work.",
+      "Do keep focus as a 2px ink outline — inset inside the grid, offset outside it."
+    ],
+    "donts": [
+      "Don't introduce a second typeface. One family, no exceptions.",
+      "Don't add a second elevation level. If something needs to stand out inside the page, rule it or tint it.",
+      "Don't box an input. The underline is the field.",
+      "Don't use oxblood for errors or error for overrides; the distinction between \"deliberate\" and \"failed\" is the whole point of having both.",
+      "Don't put a cream surface on another cream surface, or two pages on the desk at once.",
+      "Don't reach for a pill radius, a gradient, or a glow — none exist in this system, and each one would read as borrowed from somewhere else."
+    ]
+  }
+}
