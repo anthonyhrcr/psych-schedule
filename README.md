@@ -1,4 +1,4 @@
-# Agenda Psi / The Practice Diary
+# Agenda Psi
 
 A web app for a psychologist's practice: book sessions, keep a patient roster, and write session notes.
 
