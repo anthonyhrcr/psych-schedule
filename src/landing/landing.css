@@ -1,0 +1,586 @@
+/* ============================================================
+   Landing page
+   ============================================================
+   The desk holds the page: plum ground, cream sheets laid on it, brass
+   hairlines. Same world as the app, so a visitor who signs in does not
+   arrive somewhere else. Tokens come from styles.css; nothing new is
+   invented here except layout.
+
+   Radii follow the documented ladder: 3px on controls, 6px on surfaces.
+   The accent is ink throughout. Brass appears only where the product
+   already uses it, as a material tint.
+   ============================================================ */
+
+.landing {
+  min-height: 100dvh;
+  background: var(--desk);
+  color: var(--page);
+  font-family: var(--font-body);
+}
+
+.landing main {
+  display: block;
+}
+
+/* --- Navigation ---------------------------------------------------------- */
+
+.landing-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 68px;
+  padding: 0 clamp(16px, 4vw, 48px);
+  background: color-mix(in srgb, var(--desk) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(199, 169, 107, 0.3);
+}
+
+.landing-wordmark {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--page);
+  white-space: nowrap;
+}
+
+.landing-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* The audit recorded sub-44px targets as systemic debt; this page does not
+   add to it. Every control here clears 44px in both directions. */
+.landing-nav .lang-toggle {
+  color: var(--page);
+  border-color: rgba(245, 236, 216, 0.4);
+  min-height: 44px;
+  min-width: 52px;
+}
+
+/* --- Buttons ------------------------------------------------------------- */
+
+.landing-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 12px 22px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.06s;
+}
+
+.landing-btn:active {
+  transform: translateY(1px);
+}
+
+/* Cream on ink: 6.58:1, comfortably past AA. */
+.landing-btn-primary {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--page);
+}
+
+.landing-btn-primary:hover {
+  background: var(--ink-deep);
+  border-color: var(--ink-deep);
+}
+
+.landing-btn-ghost {
+  background: transparent;
+  border-color: rgba(245, 236, 216, 0.45);
+  color: var(--page);
+  min-height: 44px;
+  padding: 11px 18px;
+  font-size: 14px;
+}
+
+.landing-btn-ghost:hover {
+  background: rgba(245, 236, 216, 0.1);
+  border-color: var(--page);
+}
+
+.landing-btn-quiet {
+  background: transparent;
+  border-color: transparent;
+  color: var(--page);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.landing-btn-quiet:hover {
+  color: var(--rule);
+}
+
+/* --- Type ---------------------------------------------------------------- */
+
+.landing-h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 3.9vw, 46px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: var(--page);
+  max-width: 21ch;
+}
+
+/* Italic emphasis in the same family, with room reserved for descenders. */
+.landing-h1 em {
+  display: inline-block;
+  font-style: italic;
+  color: var(--rule);
+  line-height: 1.12;
+  padding-bottom: 4px;
+}
+
+.landing-h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3.4vw, 40px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  max-width: 20ch;
+}
+
+.landing-h2-light {
+  color: var(--page);
+}
+
+.landing-h3 {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: inherit;
+}
+
+.landing-lede {
+  margin: 20px 0 0;
+  font-size: clamp(16px, 1.5vw, 19px);
+  line-height: 1.6;
+  color: rgba(245, 236, 216, 0.82);
+  max-width: 52ch;
+}
+
+.landing-body {
+  margin: 18px 0 0;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-muted);
+  max-width: 62ch;
+}
+
+.landing-body-light {
+  color: rgba(245, 236, 216, 0.78);
+}
+
+/* --- Hero: asymmetric split, artifact running off the right edge --------- */
+
+.landing-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 72px);
+  /* No right padding and no max width: the artifact runs off the edge, so the
+     week reads as something continuing past the frame. */
+  padding: clamp(40px, 6vw, 76px) 0 clamp(64px, 8vw, 110px)
+    max(clamp(16px, 4vw, 48px), calc((100vw - 1340px) / 2));
+}
+
+.landing-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.landing-hero-artifact {
+  position: relative;
+  border-radius: 6px 0 0 6px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.2);
+  max-height: 60vh;
+}
+
+.landing-hero-artifact img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: top center;
+}
+
+/* --- Cream sheet: the encryption argument -------------------------------- */
+
+.landing-sheet {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(36px, 5vw, 64px) clamp(24px, 4vw, 56px);
+  background: var(--page);
+  border-radius: 6px;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.18);
+}
+
+.landing-ledger {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(24px, 4vw, 56px);
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule-soft);
+  color: var(--text);
+}
+
+.landing-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.landing-list li {
+  font-size: 15px;
+  line-height: 1.5;
+  padding: 9px 0;
+  color: var(--text-muted);
+}
+
+.landing-ledger-never .landing-list li {
+  color: var(--ink-deep);
+  font-weight: 500;
+}
+
+/* --- The week: full-width band, artifact beside the points --------------- */
+
+.landing-week {
+  scroll-margin-top: 84px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(72px, 10vw, 132px) clamp(16px, 4vw, 48px) clamp(48px, 6vw, 80px);
+}
+
+.landing-week-head {
+  max-width: 62ch;
+}
+
+.landing-week-body {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(32px, 6vw, 88px);
+  margin-top: clamp(32px, 5vw, 56px);
+}
+
+.landing-phone {
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.landing-phone img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.landing-points {
+  margin: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.landing-points > div {
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(199, 169, 107, 0.22);
+}
+
+.landing-points > div:last-child {
+  border-bottom: 0;
+}
+
+.landing-points dt {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--page);
+}
+
+.landing-points dd {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(245, 236, 216, 0.72);
+  max-width: 52ch;
+}
+
+/* --- Bento: five tiles for five things, none of them empty --------------- */
+
+.landing-rest {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(32px, 5vw, 56px) clamp(16px, 4vw, 48px) clamp(64px, 8vw, 104px);
+}
+
+/* Four columns, five cells, no holes:
+   row 1  [ shot      shot ][ patients  patients ]
+   row 2  [ shot      shot ][ evolution ][ history ]
+   row 3  [ passcode  passcode  passcode  passcode ] */
+.landing-bento {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: clamp(28px, 4vw, 44px);
+}
+
+.landing-tile {
+  padding: 26px 24px;
+  border-radius: 6px;
+  background: var(--page);
+  color: var(--text);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.landing-tile p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.landing-tile-wide {
+  grid-column: span 2;
+}
+
+.landing-tile-full {
+  grid-column: span 4;
+}
+
+.landing-tile-shot {
+  grid-column: span 2;
+  grid-row: span 2;
+  min-height: 300px;
+  padding: 0;
+  overflow: hidden;
+  background: var(--page-shade);
+}
+
+.landing-tile-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+}
+
+.landing-tile-ink {
+  background: var(--ink-wash);
+}
+
+.landing-tile-ink p {
+  color: var(--ink-deep);
+}
+
+.landing-tile-brass {
+  background: var(--brass-wash);
+}
+
+/* --- The cost: a narrow, quiet column ------------------------------------ */
+
+.landing-cost {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(40px, 5vw, 64px) clamp(24px, 4vw, 48px);
+  background: var(--page);
+  border-radius: 6px;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.18);
+}
+
+.landing-cost-detail {
+  margin: 24px 0 0;
+  padding-top: 22px;
+  border-top: 1px solid var(--rule-soft);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text);
+  max-width: 62ch;
+}
+
+/* --- Close --------------------------------------------------------------- */
+
+.landing-close {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: clamp(80px, 11vw, 148px) clamp(16px, 4vw, 48px) clamp(56px, 7vw, 88px);
+  text-align: center;
+}
+
+.landing-close .landing-h2 {
+  max-width: none;
+}
+
+.landing-close .landing-body {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.landing-close .landing-btn {
+  margin-top: 30px;
+}
+
+/* --- Footer -------------------------------------------------------------- */
+
+.landing-footer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 26px clamp(16px, 4vw, 48px) 40px;
+  border-top: 1px solid rgba(199, 169, 107, 0.22);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.landing-footer p {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(245, 236, 216, 0.6);
+}
+
+.landing-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Cream link on plum: 12.65:1. */
+.landing-footer .link-btn {
+  color: rgba(245, 236, 216, 0.82);
+  font-size: 13px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-footer .link-btn:hover {
+  color: var(--page);
+}
+
+/* --- Reveal -------------------------------------------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--step, 0) * 90ms);
+}
+
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* --- Responsive ---------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+  .landing-hero {
+    grid-template-columns: 1fr;
+    padding-right: clamp(16px, 4vw, 48px);
+  }
+
+  .landing-hero-artifact {
+    border-radius: 6px;
+    max-height: 56vh;
+  }
+
+  .landing-bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .landing-tile-wide,
+  .landing-tile-full,
+  .landing-tile-shot {
+    grid-column: span 2;
+    grid-row: auto;
+  }
+
+  .landing-tile-shot {
+    min-height: 0;
+  }
+
+  .landing-tile-shot img {
+    max-height: 320px;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-week-body {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-phone {
+    max-width: 300px;
+  }
+
+  .landing-ledger {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .landing-bento {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-tile-wide,
+  .landing-tile-full,
+  .landing-tile-shot {
+    grid-column: span 1;
+  }
+
+  .landing-sheet,
+  .landing-cost {
+    border-radius: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .landing-nav {
+    background: var(--desk);
+    backdrop-filter: none;
+  }
+}

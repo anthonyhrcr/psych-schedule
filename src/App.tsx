@@ -22,6 +22,7 @@ import { cookies } from "./legal/cookies";
 import { refunds } from "./legal/refunds";
 import { LEGAL_VERSION } from "./legal/version";
 import { ConsentGate } from "./components/ConsentGate";
+import { LandingPage } from "./components/LandingPage";
 import { hasAccepted } from "./lib/consent";
 import { HomePage } from "./pages/HomePage";
 import { AgendaPage } from "./pages/AgendaPage";
@@ -41,6 +42,9 @@ export default function App() {
   const [signedIn, setSignedIn] = useState(() => isSignedIn());
   // Asked once per device, after the diary is reachable but before it opens.
   const [accepted, setAccepted] = useState(() => hasAccepted(LEGAL_VERSION));
+  // A visitor meets the landing page first; the sign-in form is one click
+  // behind it rather than the front door.
+  const [askingToSignIn, setAskingToSignIn] = useState(false);
   // Records still sitting on this device when an account is opened. Captured
   // at sign-in so the offer can be made before the diary looks empty.
   const [pendingUpload, setPendingUpload] = useState<{
@@ -95,6 +99,17 @@ export default function App() {
           onBack={() => setPage(legalReturn)}
         />
       </div>
+    );
+  }
+
+  if (isBackendConfigured && !signedIn && !askingToSignIn) {
+    return (
+      <LandingPage
+        lang={lang}
+        onToggleLang={toggleLang}
+        onSignIn={() => setAskingToSignIn(true)}
+        onOpenLegal={openLegal}
+      />
     );
   }
 
