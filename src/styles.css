@@ -1929,3 +1929,81 @@ select {
     font-size: 15px;
   }
 }
+
+/* ============================================================
+   Coarse pointers
+   ============================================================
+   Keyed to the input method rather than to a width, because the two are not
+   the same question: a touchscreen laptop at 1440px needs these sizes and a
+   mouse at 375px does not. The audit measured 58 of 143 controls under
+   44x44px on a phone; these are the ones it named.
+
+   Only padding and minimum sizes change. Type size, colour and layout stay
+   exactly as they are, so nothing here alters how the app looks on a desk.
+   ============================================================ */
+
+@media (pointer: coarse) {
+  /* The date picker: 42 cells, every one of them under size. */
+  .month-cell {
+    min-height: 44px;
+    padding: 8px 0;
+  }
+
+  .month-nav {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* Seven columns have to fit a phone, so the cells reach 44px by taking
+     back the gap and a little of the panel's padding rather than by
+     overflowing it. */
+  .month-grid,
+  .month-weekdays {
+    gap: 1px;
+  }
+
+  .date-picker-bar {
+    padding: 16px 10px;
+  }
+
+  /* An invisible pseudo-element would enlarge the tap area without being
+     measurable, which makes the guarantee untestable. The control itself
+     grows instead. */
+  .lunch-handle {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 7px 12px;
+  }
+
+  .back-link {
+    min-height: 44px;
+    padding: 4px 2px;
+    margin-bottom: 10px;
+  }
+
+  .lang-toggle {
+    min-height: 44px;
+    min-width: 52px;
+  }
+
+  .nav-btn,
+  .today-btn,
+  .primary-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .link-btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

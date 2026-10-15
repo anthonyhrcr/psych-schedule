@@ -130,6 +130,7 @@ export function ScheduleGrid({
                   patientName={payload[dateISO]?.[slotIndex] ?? ""}
                   lang={lang}
                   isSelected={selection.selected.has(key)}
+                  hasSelection={selection.selected.size > 0}
                   isLunch={isLunchSlot(slotIndex, lunch)}
                   isWeekend={isWeekend(date)}
                   lunchLabel={formatLunchLabel(lunch, lang)}
