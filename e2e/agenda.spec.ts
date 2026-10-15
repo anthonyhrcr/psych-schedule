@@ -142,3 +142,20 @@ test("returns to today", async ({ page }) => {
   await page.getByRole("button", { name: /^(today|hoje)$/i }).click();
   await expect(page.locator(".day-header.today")).toHaveCount(1);
 });
+
+test("the coarse-pointer sizes stay off a mouse", async ({ page }) => {
+  // The touch work is keyed to the input method, not the viewport, so none of
+  // it may change how the app looks on a desk. A regression here would show
+  // up as a calendar that suddenly takes half the screen.
+  await freshVisit(page);
+  await openSection(page, "agenda");
+
+  const coarse = await page.evaluate(() => matchMedia("(pointer: coarse)").matches);
+  expect(coarse).toBe(false);
+
+  const cellHeight = await page
+    .locator(".month-cell")
+    .first()
+    .evaluate((el) => Math.round(el.getBoundingClientRect().height));
+  expect(cellHeight).toBeLessThan(44);
+});
